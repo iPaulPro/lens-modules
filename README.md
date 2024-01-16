@@ -1,11 +1,13 @@
 # Lens Module Contracts
 
-This repository contains the module contracts from the core Lens Protocol repo ([link](https://github.com/lens-protocol/core/tree/5454b58664fab805b6888a68ff40915d251f32f3/contracts)) as a standalone library.
+This repository contains the module contracts from the core Lens Protocol repo ([link](https://github.com/lens-protocol/core/tree/5454b58664fab805b6888a68ff40915d251f32f3/contracts)) as a standalone library, useful in Hardhat and Foundry projects.
+
+It provides all the libraries, interfaces, and base classes required when creating follow, collection, and Open Action modules.
 
 ## Installation
 
 ```
-npm install lens-modules
+npm i lens-modules
 ```
 
 ## Usage
@@ -27,6 +29,7 @@ contract OpenActionModule is
         address owner,
         address hub
     )
+        Ownable(owner)
         HubRestricted(hub)
         LensModuleMetadata()
     {
