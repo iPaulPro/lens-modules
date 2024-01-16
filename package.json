@@ -1,0 +1,30 @@
+{
+  "name": "lens-modules",
+  "version": "1.0.0",
+  "description": "All interfaces and base classes from Lens core used for creating follow, collect, and open action modules",
+  "files": [
+    "/contracts/**/*.sol"
+  ],
+  "scripts": {
+    "compile": "hardhat compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iPaulPro/lens-modules.git"
+  },
+  "keywords": [
+    "lens-protocol",
+    "lens",
+    "solidity",
+    "ethereum",
+    "smart",
+    "contracts",
+    "web3-social",
+    "web3"
+  ],
+  "author": "Paul Burke <paul@paulburke.co>",
+  "license": "MIT",
+  "devDependencies": {
+    "@openzeppelin/contracts": "^5.0.1"
+  }
+}
