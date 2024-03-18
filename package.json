@@ -2,12 +2,15 @@
   "name": "lens-modules",
   "version": "1.0.6",
   "description": "All interfaces and base classes from Lens core used for creating follow, collect, and open action modules",
+  "main": "dist/index.js",
   "files": [
     "/contracts/**/*.sol"
   ],
   "scripts": {
     "compile": "hardhat compile",
-    "clean": "hardhat clean"
+    "clean": "hardhat clean",
+    "build": "tsc",
+    "prepublish": "tsc"
   },
   "repository": {
     "type": "git",
@@ -27,6 +30,7 @@
   "license": "MIT",
   "devDependencies": {
     "@openzeppelin/contracts": "4.8.0",
-    "hardhat": "^2.19.4"
+    "hardhat": "^2.19.4",
+    "typescript": "^5.4.2"
   }
 }
