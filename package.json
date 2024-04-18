@@ -1,6 +1,6 @@
 {
   "name": "lens-modules",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "All interfaces and base classes from Lens core used for creating follow, collect, and open action modules",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
