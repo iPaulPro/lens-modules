@@ -86,7 +86,7 @@ import {IBaseFeeCollectModule, BaseFeeCollectModuleInitData} from "lens-modules/
 import {ModuleTypes} from "lens-modules/contracts/modules/libraries/constants/ModuleTypes.sol";
 import {LensModule} from "lens-modules/contracts/modules/LensModule.sol";
 
-contract YourCollectModule is BaseFeeCollectModule, LensModuleMetadata {
+contract YourCollectModule is Ownable, BaseFeeCollectModule, LensModuleMetadata {
     using SafeERC20 for IERC20;
 
     constructor(
@@ -95,6 +95,7 @@ contract YourCollectModule is BaseFeeCollectModule, LensModuleMetadata {
         address moduleRegistry,
         address moduleOwner
     )
+        Ownable(moduleOwner)
         BaseFeeCollectModule(hub, actionModule, moduleRegistry)
         LensModuleMetadata()
     {}

@@ -6,7 +6,6 @@ export const LensContracts = {
     LensHandlesGuardianTimelock: 86400,
     LensHubProxy: "0xdb46d1dc155634fbc732f92e853b10b288ad5a1d",
     ProfileCreator: "0xe7Af8325aA443F7678B651d4f0De23663E818691",
-    LensPeriphery: "0xeff187b4190E551FC25a7fA4dFC6cf7fDeF7194f",
     Modules: {
       follow: [
         {
@@ -72,68 +71,67 @@ export const LensContracts = {
     FollowTokenURI: "0x07D8a9FEdef6DC7004b9ae0935eA178bFa8bBdF1"
   },
   testnet: {
-    chainId: 80001,
-    network: "mumbai",
+    chainId: 80002,
+    network: "amoy",
     LensProfilesGuardianTimelock: 300,
     LensHandlesGuardianTimelock: 300,
-    LensHubProxy: "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82",
-    ProfileCreator: "0x6C1e1bC39b13f9E0Af9424D76De899203F47755F",
-    LensPeriphery: "0xD5037d72877808cdE7F669563e9389930AF404E8",
+    LensHubProxy: "0xA2574D9DdB6A325Ad2Be838Bd854228B80215148",
+    ProfileCreator: "0x8de25afc4B37e0AdBb58caf3dF06fAf419455404",
     Modules: {
       follow: [
         {
           name: "FeeFollowModule",
-          address: "0xB7612562C63dDcAFE4349beE6Ca35e9170819504"
+          address: "0x1F7A5E77493AADc59FCD835921a60A1010312D1E"
         },
         {
           name: "RevertFollowModule",
-          address: "0xaaB7E564ECbb2D11bCb9592A18F2E9281BA9f73A"
+          address: "0x0c4944D3d0dDf692B578100Ed260a67c7d7F7930"
         }
       ],
       act: [
         {
           name: "CollectPublicationAction",
-          address: "0x4FdAae7fC16Ef41eAE8d8f6578d575C9d64722f2"
+          address: "0x34A437A91415C36712B0D912c171c74595Be437d"
         }
       ],
       collect: [
         {
           name: "SimpleFeeCollectModule",
-          address: "0x345Cc3A3F9127DE2C69819C2E07bB748dE6E45ee"
+          address: "0x185B529b421Ff60b0F2388483b757b39103cfcb1"
         },
         {
           name: "MultirecipientFeeCollectModule",
-          address: "0xe9FabdC429640DC35153C9Ba13AE83A0A1996912"
+          address: "0xC13ACcCe5cDb32bED1Af0B11cdb637E3966BCB45"
         }
       ],
       reference: [
         {
           name: "DegreesOfSeparationReferenceModule",
-          address: "0xFb290857DBA5c24Ef548a8D98CEFba8E56293254"
+          address: "0x2C1F5d6f6dc5df8ce021B5DF6d0AF84c32817d0C"
         },
         {
           name: "FollowerOnlyReferenceModule",
-          address: "0x9Dd0b6e39F8Ea8B8dE9D55acC4652573E2eCB16f"
+          address: "0x0D11dC88286466DE99E3DE836eaF35826d373a3c"
         }
       ],
     },
-    Treasury: "0x8c6a6488822a5Dad91CBBfFAF7Af3379Bd6d8306",
-    TreasuryFee: "50",
-    LegacyCollectNFTImpl: "0x5886B1Db98a3f5AaFBDeE2DEC4783C6927655B7e",
-    FollowNFTImpl: "0xC2452BAAeffd6109750401bF83e15E5aaec98606",
-    LensHandlesImpl: "0x4d2c60431d4fb2484c82fdd8c05985fff93851e1",
-    LensHandles: "0x44e1668150A154f01D53d1f05B8Fa0d8f3f341a9",
-    TokenHandleRegistryImpl: "0xe3a704fee3260cbee9b54a300be53f534ad6755a",
-    TokenHandleRegistry: "0x66cA05cAc4e8D543028192dD28C0570a0b6e3413",
-    ModuleRegistryImpl: "0x7f1b6c596b917619690a836da5247279d73dc7a1",
-    ModuleRegistry: "0x4BeB63842BB800A1Da77a62F2c74dE3CA39AF7C0",
-    LensHubV2Impl: "0xb4a26f55cc2d1473b8a7649d90d34ba52a480391",
-    GovernanceContract: "0xB03B8801cF9D074Ea468aAA8eBd9B5EeD67Ac5B6",
-    ProfileCreationProxy: "0x0554a7163C3aa423429719940FFE179F21cD83f6",
-    PublicActProxy: "0x4ed64Eb32C96Df0eA60BB8934798F4DFd3098Ba1",
-    CollectNFT: "0x15062A8b16EAe79D68EC6a583212349bdF679C5e",
-    CollectPublicationActionImpl: "0x2f422811abbc5afa6d18f083e70bc6326fd245e0",
-    LitAccessControlImpl: "0x6f0512ac88ddeb0a4be8eecc716dac0793eecff2",
-    LitAccessControl: "0xc4F726a10fDEb0E98e16Fa658b606192d57FC71c",
+    Treasury: "0x0000000000000000000000000000000000000000",
+    TreasuryFee: "0",
+    LegacyCollectNFTImpl: "0x0000000000000000000000000000000000000000",
+    FollowNFTImpl: "0x3CA67DAfe181AAd74Ad026Cc098E248869f50Ff1",
+    LensHandlesImpl: "0x33b7c0692dd8267f936936c0a0f7079144d78b92",
+    LensHandles: "0xf6fDD7932219D64f267E4BfaF8d19774526d31D9",
+    TokenHandleRegistryImpl: "0x33b7c0692dd8267f936936c0a0f7079144d78b92",
+    TokenHandleRegistry: "0x24360dc6Af3c0b37baA8B0aaDD5BcA11C1a1389A",
+    ModuleRegistryImpl: "0x90e0b396c83f6df96cd1f76df3db2daf9eae9c93",
+    ModuleRegistry: "0x9E81eD8099dF82004D298144138C12AbB959DF1E",
+    LensHubV2Impl: "0x68b2751c4113bbacca7c024a030355fe3989bda7",
+    GovernanceContract: "0x0000000000000000000000000000000000000000",
+    ProfileCreationProxy: "0x8de25afc4B37e0AdBb58caf3dF06fAf419455404",
+    PublicActProxy: "0x88c8fa7C470d9d94aDfA40187157917B26A548d3",
+    CollectNFT: "0xC7B6faDeCE0345E60ffa46BD3100094815aeB428",
+    CollectPublicationActionImpl: "0x21e305f2aea4ef7980b15a3cd204b28ac8706f50",
+    LitAccessControlImpl: "0xae17edd1cbce05394575192006893af9cb1afc05",
+    LitAccessControl: "0x9Ddad77aD520d02D2566563b446935C6edD970fC",
   },
 } as const;
