@@ -1,2 +1,5 @@
-export * from './lens-contracts'
 export * from './lenshub-abi'
+export * from '../deployments/lens-contracts'
+export * from '../deployments/follow-modules'
+export * from '../deployments/open-actions'
+export * from '../deployments/reference-modules'
