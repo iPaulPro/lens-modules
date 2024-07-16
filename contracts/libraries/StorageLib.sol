@@ -8,7 +8,7 @@ library StorageLib {
     // uint256 constant NAME_SLOT = 0;
     // uint256 constant SYMBOL_SLOT = 1;
     uint256 constant TOKEN_DATA_MAPPING_SLOT = 2;
-    // uint256 constant BALANCES_SLOT = 3;
+    uint256 constant BALANCES_SLOT = 3;
     // uint256 constant TOKEN_APPROVAL_MAPPING_SLOT = 4;
     // uint256 constant OPERATOR_APPROVAL_MAPPING_SLOT = 5;
     // Slot 6 is deprecated in Lens V2. In V1 it was used for ERC-721 Enumerable's `ownedTokens`.
@@ -97,9 +97,9 @@ library StorageLib {
     }
 
     function tokenGuardianDisablingTimestamp()
-        internal
-        pure
-        returns (mapping(address => uint256) storage _tokenGuardianDisablingTimestamp)
+    internal
+    pure
+    returns (mapping(address => uint256) storage _tokenGuardianDisablingTimestamp)
     {
         assembly {
             _tokenGuardianDisablingTimestamp.slot := TOKEN_GUARDIAN_DISABLING_TIMESTAMP_MAPPING_SLOT
@@ -111,6 +111,12 @@ library StorageLib {
             mstore(0, tokenId)
             mstore(32, TOKEN_DATA_MAPPING_SLOT)
             _tokenData.slot := keccak256(0, 64)
+        }
+    }
+
+    function balances() internal pure returns (mapping(address => uint256) storage _balances) {
+        assembly {
+            _balances.slot := BALANCES_SLOT
         }
     }
 
@@ -131,9 +137,9 @@ library StorageLib {
     }
 
     function profileIdByHandleHash()
-        internal
-        pure
-        returns (mapping(bytes32 => uint256) storage _profileIdByHandleHash)
+    internal
+    pure
+    returns (mapping(bytes32 => uint256) storage _profileIdByHandleHash)
     {
         assembly {
             _profileIdByHandleHash.slot := PROFILE_ID_BY_HANDLE_HASH_MAPPING_SLOT
@@ -141,9 +147,9 @@ library StorageLib {
     }
 
     function profileCreatorWhitelisted()
-        internal
-        pure
-        returns (mapping(address => bool) storage _profileCreatorWhitelisted)
+    internal
+    pure
+    returns (mapping(address => bool) storage _profileCreatorWhitelisted)
     {
         assembly {
             _profileCreatorWhitelisted.slot := PROFILE_CREATOR_WHITELIST_MAPPING_SLOT
@@ -151,9 +157,9 @@ library StorageLib {
     }
 
     function migrationAdminWhitelisted()
-        internal
-        pure
-        returns (mapping(address => bool) storage _migrationAdminWhitelisted)
+    internal
+    pure
+    returns (mapping(address => bool) storage _migrationAdminWhitelisted)
     {
         assembly {
             _migrationAdminWhitelisted.slot := MIGRATION_ADMINS_WHITELISTED_MAPPING_SLOT
@@ -161,9 +167,9 @@ library StorageLib {
     }
 
     function legacyCollectFollowValidationHelper()
-        internal
-        pure
-        returns (mapping(address => uint256) storage _legacyCollectFollowValidationHelper)
+    internal
+    pure
+    returns (mapping(address => uint256) storage _legacyCollectFollowValidationHelper)
     {
         assembly {
             _legacyCollectFollowValidationHelper.slot := LEGACY_COLLECT_FOLLOW_VALIDATION_HELPER_MAPPING_SLOT
