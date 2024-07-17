@@ -290,8 +290,8 @@ contract LensHandles is ERC721, ERC2981CollectionRoyalties, ImmutableOwnable, IL
     function _hasTokenGuardianEnabled(address wallet) internal view returns (bool) {
         return
             !wallet.isContract() &&
-            (_tokenGuardianDisablingTimestamp[wallet] == GUARDIAN_ENABLED ||
-                block.timestamp < _tokenGuardianDisablingTimestamp[wallet]);
+        (_tokenGuardianDisablingTimestamp[wallet] == GUARDIAN_ENABLED ||
+            block.timestamp < _tokenGuardianDisablingTimestamp[wallet]);
     }
 
     function _getRoyaltiesInBasisPointsSlot() internal pure override returns (uint256 slot) {
