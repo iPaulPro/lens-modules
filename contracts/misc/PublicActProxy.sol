@@ -7,7 +7,7 @@ import {Types} from '../libraries/constants/Types.sol';
 import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import {SafeERC20} from '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import {CollectPublicationAction} from '../modules/act/collect/CollectPublicationAction.sol';
-import {PublicActProxy_MetaTx} from 'contracts/misc/PublicActProxy_MetaTx.sol';
+import {PublicActProxy_MetaTx} from '../misc/PublicActProxy_MetaTx.sol';
 
 // This contract should be the owner/DE of the publicationActionParams.actorProfileId
 // This contract should be set as publicationActionParams.transactionExecutor
