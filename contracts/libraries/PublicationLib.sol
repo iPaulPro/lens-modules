@@ -7,7 +7,6 @@ import {Types} from './constants/Types.sol';
 import {Events} from './constants/Events.sol';
 import {Errors} from './constants/Errors.sol';
 import {IReferenceModule} from '../interfaces/IReferenceModule.sol';
-import {ILegacyReferenceModule} from '../interfaces/ILegacyReferenceModule.sol';
 import {StorageLib} from './StorageLib.sol';
 import {IPublicationActionModule} from '../interfaces/IPublicationActionModule.sol';
 import {IModuleRegistry} from '../interfaces/IModuleRegistry.sol';
@@ -344,42 +343,19 @@ library PublicationLib {
             .getPublication(commentParams.pointedProfileId, commentParams.pointedPubId)
             .referenceModule;
         if (refModule != address(0)) {
-            try
-                IReferenceModule(refModule).processComment(
-                    Types.ProcessCommentParams({
-                        profileId: commentParams.profileId,
-                        pubId: pubIdAssigned,
-                        transactionExecutor: transactionExecutor,
-                        pointedProfileId: commentParams.pointedProfileId,
-                        pointedPubId: commentParams.pointedPubId,
-                        referrerProfileIds: commentParams.referrerProfileIds,
-                        referrerPubIds: commentParams.referrerPubIds,
-                        referrerPubTypes: referrerPubTypes,
-                        data: commentParams.referenceModuleData
-                    })
-                )
-            returns (bytes memory returnData) {
-                return (returnData);
-            } catch (bytes memory err) {
-                assembly {
-                    /// Equivalent to reverting with the returned error selector if
-                    /// the length is not zero.
-                    let length := mload(err)
-                    if iszero(iszero(length)) {
-                        revert(add(err, 32), length)
-                    }
-                }
-                if (commentParams.referrerProfileIds.length > 0) {
-                    // Deprecated reference modules don't support referrers.
-                    revert Errors.InvalidReferrer();
-                }
-                ILegacyReferenceModule(refModule).processComment(
-                    commentParams.profileId,
-                    commentParams.pointedProfileId,
-                    commentParams.pointedPubId,
-                    commentParams.referenceModuleData
-                );
-            }
+            IReferenceModule(refModule).processComment(
+                Types.ProcessCommentParams({
+                    profileId: commentParams.profileId,
+                    pubId: pubIdAssigned,
+                    transactionExecutor: transactionExecutor,
+                    pointedProfileId: commentParams.pointedProfileId,
+                    pointedPubId: commentParams.pointedPubId,
+                    referrerProfileIds: commentParams.referrerProfileIds,
+                    referrerPubIds: commentParams.referrerPubIds,
+                    referrerPubTypes: referrerPubTypes,
+                    data: commentParams.referenceModuleData
+                })
+            );
         } else {
             if (commentParams.referrerProfileIds.length > 0) {
                 // We don't allow referrers if the reference module is not set.
@@ -399,42 +375,19 @@ library PublicationLib {
             .getPublication(quoteParams.pointedProfileId, quoteParams.pointedPubId)
             .referenceModule;
         if (refModule != address(0)) {
-            try
-                IReferenceModule(refModule).processQuote(
-                    Types.ProcessQuoteParams({
-                        profileId: quoteParams.profileId,
-                        pubId: pubIdAssigned,
-                        transactionExecutor: transactionExecutor,
-                        pointedProfileId: quoteParams.pointedProfileId,
-                        pointedPubId: quoteParams.pointedPubId,
-                        referrerProfileIds: quoteParams.referrerProfileIds,
-                        referrerPubIds: quoteParams.referrerPubIds,
-                        referrerPubTypes: referrerPubTypes,
-                        data: quoteParams.referenceModuleData
-                    })
-                )
-            returns (bytes memory returnData) {
-                return (returnData);
-            } catch (bytes memory err) {
-                assembly {
-                    /// Equivalent to reverting with the returned error selector if
-                    /// the length is not zero.
-                    let length := mload(err)
-                    if iszero(iszero(length)) {
-                        revert(add(err, 32), length)
-                    }
-                }
-                if (quoteParams.referrerProfileIds.length > 0) {
-                    // Deprecated reference modules don't support referrers.
-                    revert Errors.InvalidReferrer();
-                }
-                ILegacyReferenceModule(refModule).processComment(
-                    quoteParams.profileId,
-                    quoteParams.pointedProfileId,
-                    quoteParams.pointedPubId,
-                    quoteParams.referenceModuleData
-                );
-            }
+            IReferenceModule(refModule).processQuote(
+                Types.ProcessQuoteParams({
+                    profileId: quoteParams.profileId,
+                    pubId: pubIdAssigned,
+                    transactionExecutor: transactionExecutor,
+                    pointedProfileId: quoteParams.pointedProfileId,
+                    pointedPubId: quoteParams.pointedPubId,
+                    referrerProfileIds: quoteParams.referrerProfileIds,
+                    referrerPubIds: quoteParams.referrerPubIds,
+                    referrerPubTypes: referrerPubTypes,
+                    data: quoteParams.referenceModuleData
+                })
+            );
         } else {
             if (quoteParams.referrerProfileIds.length > 0) {
                 // We don't allow referrers if the reference module is not set.
@@ -454,42 +407,19 @@ library PublicationLib {
             .getPublication(mirrorParams.pointedProfileId, mirrorParams.pointedPubId)
             .referenceModule;
         if (refModule != address(0)) {
-            try
-                IReferenceModule(refModule).processMirror(
-                    Types.ProcessMirrorParams({
-                        profileId: mirrorParams.profileId,
-                        pubId: pubIdAssigned,
-                        transactionExecutor: transactionExecutor,
-                        pointedProfileId: mirrorParams.pointedProfileId,
-                        pointedPubId: mirrorParams.pointedPubId,
-                        referrerProfileIds: mirrorParams.referrerProfileIds,
-                        referrerPubIds: mirrorParams.referrerPubIds,
-                        referrerPubTypes: referrerPubTypes,
-                        data: mirrorParams.referenceModuleData
-                    })
-                )
-            returns (bytes memory returnData) {
-                return (returnData);
-            } catch (bytes memory err) {
-                assembly {
-                    /// Equivalent to reverting with the returned error selector if
-                    /// the length is not zero.
-                    let length := mload(err)
-                    if iszero(iszero(length)) {
-                        revert(add(err, 32), length)
-                    }
-                }
-                if (mirrorParams.referrerProfileIds.length > 0) {
-                    // Deprecated reference modules don't support referrers.
-                    revert Errors.InvalidReferrer();
-                }
-                ILegacyReferenceModule(refModule).processMirror(
-                    mirrorParams.profileId,
-                    mirrorParams.pointedProfileId,
-                    mirrorParams.pointedPubId,
-                    mirrorParams.referenceModuleData
-                );
-            }
+            IReferenceModule(refModule).processMirror(
+                Types.ProcessMirrorParams({
+                    profileId: mirrorParams.profileId,
+                    pubId: pubIdAssigned,
+                    transactionExecutor: transactionExecutor,
+                    pointedProfileId: mirrorParams.pointedProfileId,
+                    pointedPubId: mirrorParams.pointedPubId,
+                    referrerProfileIds: mirrorParams.referrerProfileIds,
+                    referrerPubIds: mirrorParams.referrerPubIds,
+                    referrerPubTypes: referrerPubTypes,
+                    data: mirrorParams.referenceModuleData
+                })
+            );
         } else {
             if (mirrorParams.referrerProfileIds.length > 0) {
                 // We don't allow referrers if the reference module is not set.

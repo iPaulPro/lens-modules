@@ -275,28 +275,6 @@ interface ILensProtocol {
     ) external;
 
     /**
-     * @notice Collects a given publication via signature with the specified parameters.
-     * Collect can have referrers (e.g. publications or profiles that allowed to discover the pointed publication).
-     * @custom:permissions Collector Profile Owner or its Delegated Executor.
-     * @custom:pending-deprecation Collect modules were replaced by PublicationAction Collect modules in V2. This method
-     * is left here for backwards compatibility with posts made in V1 that had Collect modules.
-     *
-     * @param collectParams A CollectParams struct containing the parameters.
-     *
-     * @return uint256 An integer representing the minted token ID.
-     */
-    function collectLegacy(Types.LegacyCollectParams calldata collectParams) external returns (uint256);
-
-    /**
-     * @custom:meta-tx collect.
-     * @custom:pending-deprecation
-     */
-    function collectLegacyWithSig(
-        Types.LegacyCollectParams calldata collectParams,
-        Types.EIP712Signature calldata signature
-    ) external returns (uint256);
-
-    /**
      * @notice Acts on a given publication with the specified parameters.
      * You can act on a publication except a mirror (if it has at least one action module initialized).
      * Actions can have referrers (e.g. publications or profiles that allowed to discover the pointed publication).

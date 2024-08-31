@@ -17,7 +17,6 @@ library Errors {
     error NotProfileOwner();
     error PublicationDoesNotExist();
     error CallerNotFollowNFT();
-    error CallerNotCollectNFT(); // Legacy
     error ArrayMismatch();
     error NotWhitelisted();
     error NotRegistered();
@@ -35,8 +34,6 @@ library Errors {
     // Module Errors
     error InitParamsInvalid();
     error ActionNotAllowed();
-
-    error CollectNotAllowed(); // Used in LegacyCollectLib (pending deprecation)
 
     // MultiState Errors
     error Paused();

@@ -115,28 +115,6 @@ library ValidationLib {
         return referrerPubTypes;
     }
 
-    function validateLegacyCollectReferrer(
-        uint256 referrerProfileId,
-        uint256 referrerPubId,
-        uint256 publicationCollectedProfileId,
-        uint256 publicationCollectedId
-    ) external view {
-        if (
-            !ProfileLib.exists(referrerProfileId) ||
-            PublicationLib.getPublicationType(referrerProfileId, referrerPubId) != Types.PublicationType.Mirror
-        ) {
-            revert Errors.InvalidReferrer();
-        }
-        Types.Publication storage _referrerMirror = StorageLib.getPublication(referrerProfileId, referrerPubId);
-        // A mirror can only be a referrer of a legacy publication if it is pointing to it.
-        if (
-            _referrerMirror.pointedProfileId != publicationCollectedProfileId ||
-            _referrerMirror.pointedPubId != publicationCollectedId
-        ) {
-            revert Errors.InvalidReferrer();
-        }
-    }
-
     function _validateReferrerAndGetReferrerPubType(
         uint256 referrerProfileId,
         uint256 referrerPubId,

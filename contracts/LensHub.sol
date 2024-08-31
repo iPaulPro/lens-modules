@@ -19,7 +19,6 @@ import {LensHubEventHooks} from './base/LensHubEventHooks.sol';
 
 // Libraries
 import {ActionLib} from './libraries/ActionLib.sol';
-import {LegacyCollectLib} from './libraries/LegacyCollectLib.sol';
 import {FollowLib} from './libraries/FollowLib.sol';
 import {MetaTxLib} from './libraries/MetaTxLib.sol';
 import {ProfileLib} from './libraries/ProfileLib.sol';
@@ -64,12 +63,11 @@ contract LensHub is
 
     constructor(
         address followNFTImpl,
-        address legacyCollectNFTImpl, // We still pass the deprecated CollectNFTImpl for legacy Collects to work
         address moduleRegistry,
         uint256 tokenGuardianCooldown
     )
         LensProfiles(tokenGuardianCooldown)
-        LensImplGetters(followNFTImpl, legacyCollectNFTImpl, moduleRegistry)
+        LensImplGetters(followNFTImpl, moduleRegistry)
     {}
 
     /// @inheritdoc ILensProtocol
@@ -394,46 +392,6 @@ contract LensHub is
     }
 
     /// @inheritdoc ILensProtocol
-    function collectLegacy(
-        Types.LegacyCollectParams calldata collectParams
-    )
-        external
-        override
-        whenNotPaused
-        onlyProfileOwnerOrDelegatedExecutor(msg.sender, collectParams.collectorProfileId)
-        returns (uint256)
-    {
-        return
-            LegacyCollectLib.collect({
-                collectParams: collectParams,
-                transactionExecutor: msg.sender,
-                collectorProfileOwner: ownerOf(collectParams.collectorProfileId),
-                collectNFTImpl: this.getLegacyCollectNFTImpl()
-            });
-    }
-
-    /// @inheritdoc ILensProtocol
-    function collectLegacyWithSig(
-        Types.LegacyCollectParams calldata collectParams,
-        Types.EIP712Signature calldata signature
-    )
-        external
-        override
-        whenNotPaused
-        onlyProfileOwnerOrDelegatedExecutor(signature.signer, collectParams.collectorProfileId)
-        returns (uint256)
-    {
-        MetaTxLib.validateLegacyCollectSignature(signature, collectParams);
-        return
-            LegacyCollectLib.collect({
-                collectParams: collectParams,
-                transactionExecutor: signature.signer,
-                collectorProfileOwner: ownerOf(collectParams.collectorProfileId),
-                collectNFTImpl: this.getLegacyCollectNFTImpl()
-            });
-    }
-
-    /// @inheritdoc ILensProtocol
     function act(
         Types.PublicationActionParams calldata publicationActionParams
     )
@@ -560,29 +518,6 @@ contract LensHub is
     }
 
     function getFollowModule(uint256 profileId) external view returns (address) {
-        if (__DEPRECATED__collectModuleWhitelisted[msg.sender]) {
-            // Injecting LensHub as follow module when a Lens V1 collect module is performing the call.
-            // This is a hack to make legacy collect work when configured for followers only.
-            return address(this);
-        } else {
-            return StorageLib.getProfile(profileId).followModule;
-        }
-    }
-
-    function isFollowing(
-        uint256 followedProfileId,
-        address followerAddress,
-        uint256 /* tokenId */
-    ) external view returns (bool) {
-        if (__DEPRECATED__collectModuleWhitelisted[msg.sender]) {
-            // This state was pre-filled at LegacyCollectLib and it is a hack to make legacy collect work when
-            // configured for followers only.
-            return
-                _legacyCollectFollowValidationHelper[followerAddress] == followedProfileId ||
-                ProfileLib.isExecutorApproved(followedProfileId, followerAddress) ||
-                ProfileLib.ownerOf(followedProfileId) == followerAddress;
-        } else {
-            revert Errors.ExecutorInvalid();
-        }
+        return StorageLib.getProfile(profileId).followModule;
     }
 }

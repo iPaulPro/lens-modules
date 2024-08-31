@@ -18,14 +18,6 @@ interface ILensImplGetters {
     function getFollowNFTImpl() external view returns (address);
 
     /**
-     * @notice Returns the Collect NFT implementation address that is used for each new deployed Collect NFT.
-     * @custom:pending-deprecation
-     *
-     * @return address The Collect NFT implementation address.
-     */
-    function getLegacyCollectNFTImpl() external view returns (address);
-
-    /**
      * @notice Returns the address of the registry that stores all modules that are used by the Lens Protocol.
      *
      * @return address The address of the Module Registry contract.

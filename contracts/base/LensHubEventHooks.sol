@@ -20,23 +20,4 @@ abstract contract LensHubEventHooks is ILensHubEventHooks {
         }
         emit Events.Unfollowed(unfollowerProfileId, idOfProfileUnfollowed, transactionExecutor, block.timestamp);
     }
-
-    //////////////////////////////////////
-    ///       DEPRECATED FUNCTIONS     ///
-    //////////////////////////////////////
-
-    // Deprecated in V2. Kept here just for backwards compatibility with Lens V1 Collect NFTs.
-    function emitCollectNFTTransferEvent(
-        uint256 profileId,
-        uint256 pubId,
-        uint256 collectNFTId,
-        address from,
-        address to
-    ) external {
-        address expectedCollectNFT = StorageLib.getPublication(profileId, pubId).__DEPRECATED__collectNFT;
-        if (msg.sender != expectedCollectNFT) {
-            revert Errors.CallerNotCollectNFT();
-        }
-        emit Events.CollectNFTTransferred(profileId, pubId, collectNFTId, from, to, block.timestamp);
-    }
 }

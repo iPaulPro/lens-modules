@@ -226,20 +226,6 @@ library Events {
      */
     event FollowNFTDeployed(uint256 indexed profileId, address indexed followNFT, uint256 timestamp);
     /**
-     * @dev Emitted when a collectNFT clone is deployed using a lazy deployment pattern.
-     *
-     * @param profileId The publisher's profile token ID.
-     * @param pubId The publication associated with the newly deployed collectNFT clone's ID.
-     * @param collectNFT The address of the newly deployed collectNFT clone.
-     * @param timestamp The current block timestamp.
-     */
-    event LegacyCollectNFTDeployed(
-        uint256 indexed profileId,
-        uint256 indexed pubId,
-        address indexed collectNFT,
-        uint256 timestamp
-    );
-    /**
      * @dev Emitted upon a successful action.
      *
      * @param publicationActionParams The parameters passed to act on a publication.

@@ -280,30 +280,6 @@ library MetaTxLib {
         );
     }
 
-    function validateLegacyCollectSignature(
-        Types.EIP712Signature calldata signature,
-        Types.LegacyCollectParams calldata collectParams
-    ) external {
-        _validateRecoveredAddress(
-            _calculateDigest(
-                keccak256(
-                    abi.encode(
-                        Typehash.COLLECT_LEGACY,
-                        collectParams.publicationCollectedProfileId,
-                        collectParams.publicationCollectedId,
-                        collectParams.collectorProfileId,
-                        collectParams.referrerProfileId,
-                        collectParams.referrerPubId,
-                        _encodeUsingEip712Rules(collectParams.collectModuleData),
-                        _getNonceIncrementAndEmitEvent(signature.signer),
-                        signature.deadline
-                    )
-                )
-            ),
-            signature
-        );
-    }
-
     function validateActSignature(
         Types.EIP712Signature calldata signature,
         Types.PublicationActionParams calldata publicationActionParams
