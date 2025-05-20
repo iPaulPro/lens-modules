@@ -1,16 +1,15 @@
 {
   "name": "lens-modules",
   "version": "1.2.0",
-  "description": "All interfaces and base classes from Lens core used for creating follow, collect, and open action modules",
+  "description": "Contracts, ABIs, and utilities for Lens Protocol.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "/contracts/**/*.sol",
+    "/abis/**/*.json",
     "dist"
   ],
   "scripts": {
-    "compile": "hardhat compile",
-    "clean": "hardhat clean",
     "build": "tsc",
     "prepublish": "tsc"
   },
@@ -31,8 +30,15 @@
   "author": "Paul Burke <paul@paulburke.co>",
   "license": "MIT",
   "devDependencies": {
-    "@openzeppelin/contracts": "4.8.0",
-    "hardhat": "^2.19.4",
+    "@eslint/eslintrc": "^3.3.1",
+    "@openzeppelin/contracts": "4.9.6",
+    "eslint": "^9.26.0",
+    "eslint-config-prettier": "^10.1.3",
+    "eslint-plugin-prettier": "^5.4.0",
+    "prettier": "^3.5.3",
     "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "glob-promise": "^6.0.7"
   }
 }

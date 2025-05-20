@@ -1,0 +1,40 @@
+[
+  {
+    "type": "event",
+    "name": "Lens_Contract_Deployed",
+    "inputs": [
+      {
+        "name": "contractType",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "flavour",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Lens_PermissionId_Available",
+    "inputs": [
+      {
+        "name": "permissionId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  }
+]

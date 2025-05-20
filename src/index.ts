@@ -1,5 +1,1 @@
-export * from './lenshub-abi'
-export * from './lens-contracts'
-export * from './verified-modules/follow-modules'
-export * from './verified-modules/open-actions'
-export * from './verified-modules/reference-modules'
+export * from "./lens-contracts";
