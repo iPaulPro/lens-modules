@@ -30,6 +30,7 @@ Use the `Deployments` helper JavaScript class to get the contract addresses of t
 
 ```javascript
 import { lensDeployments } from "lens-modules/deployments";
+
 const lensFactoryAddress = lensDeployments.mainnet.LensFactory.address;
 ```
 
@@ -39,4 +40,13 @@ Use the `ABIs` helper JavaScript class to get the ABI of any Lens contract. Eg:
 
 ```javascript
 import { accountAbi } from "lens-modules/abis";
+
+await walletClient.writeContract({
+  address: "0xYourAccountContractAddress",
+  abi: accountAbi,
+  functionName: "executeTransaction",
+  args: [
+    // ... your function arguments
+  ],
+});
 ```
