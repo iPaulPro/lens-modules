@@ -1,17 +1,40 @@
 {
   "name": "lens-modules",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Contracts, ABIs, and utilities for Lens Protocol.",
+  "type": "module",
+  "sideEffects": false,
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "/contracts/**/*.sol",
-    "/abis/**/*.json",
     "dist"
   ],
+  "exports": {
+    ".": {
+      "import":   "./dist/index.js",
+      "types":    "./dist/index.d.ts"
+    },
+    "./abis": {
+      "import":   "./dist/abis.js",
+      "types":    "./dist/abis.d.ts"
+    },
+    "./deployments": {
+      "import":   "./dist/deployments.js",
+      "types":    "./dist/deployments.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "abis":      ["dist/abis.d.ts"],
+      "deployments": ["dist/deployments.d.ts"]
+    }
+  },
   "scripts": {
     "build": "tsc",
-    "prepublish": "tsc"
+    "prepublish": "tsc",
+    "generate": "npx wagmi generate"
   },
   "repository": {
     "type": "git",
@@ -32,13 +55,13 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@openzeppelin/contracts": "4.9.6",
+    "@types/node": "^22.15.21",
+    "@wagmi/cli": "^2.3.1",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.3",
     "eslint-plugin-prettier": "^5.4.0",
     "prettier": "^3.5.3",
-    "typescript": "^5.4.2"
-  },
-  "dependencies": {
-    "glob-promise": "^6.0.7"
+    "typescript": "^5.4.2",
+    "viem": "^2.30.0"
   }
 }

@@ -1,1 +1,2 @@
-export * from "./lens-contracts";
+export * from "./deployments";
+export * from "./abis";
