@@ -1,6 +1,6 @@
 {
   "name": "lens-modules",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Contracts, ABIs, and utilities for Lens Protocol.",
   "type": "module",
   "sideEffects": false,
