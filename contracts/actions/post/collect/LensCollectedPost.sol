@@ -2,7 +2,7 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import "../../../../../../../core/base/LensERC721.sol";
+import "../../../core/base/LensERC721.sol";
 import {IERC7572} from "./IERC7572.sol";
 import {IFeed} from "../../../core/interfaces/IFeed.sol";
 import {ITokenURIProvider} from "../../../core/interfaces/ITokenURIProvider.sol";

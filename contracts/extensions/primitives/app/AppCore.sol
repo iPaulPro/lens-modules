@@ -2,7 +2,7 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import "../../../../../../../core/libraries/KeyValueStorageLib.sol";
+import "../../../core/libraries/KeyValueStorageLib.sol";
 import {Errors} from "../../../core/types/Errors.sol";
 
 struct ArrayStorageHelper {
