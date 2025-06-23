@@ -1,4 +1,3 @@
-import { react } from "@wagmi/cli/plugins";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -23,7 +22,6 @@ const contracts = await Promise.all(
 const config: Config = {
   out: "src/abis.ts",
   contracts,
-  plugins: [react()],
 };
 
 export default config;
