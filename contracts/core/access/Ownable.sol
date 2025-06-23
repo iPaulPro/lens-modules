@@ -2,8 +2,8 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {Errors} from "../types/Errors.sol";
-import {IOwnable} from "../interfaces/IOwnable.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
+import {IOwnable} from "lens-modules/contracts/core/interfaces/IOwnable.sol";
 
 abstract contract Ownable is IOwnable {
     event Lens_Ownable_OwnershipTransferred(address indexed previousOwner, address indexed newOwner);

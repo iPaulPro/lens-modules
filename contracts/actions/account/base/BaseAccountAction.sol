@@ -2,10 +2,10 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {KeyValue} from "../../../core/types/Types.sol";
-import {BaseAction} from "../../base/BaseAction.sol";
-import {IAccountAction} from "../../../extensions/actions/ActionHub.sol";
-import {Errors} from "../../../core/types/Errors.sol";
+import {KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {BaseAction} from "lens-modules/contracts/actions/base/BaseAction.sol";
+import {IAccountAction} from "lens-modules/contracts/extensions/actions/ActionHub.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 abstract contract BaseAccountAction is BaseAction, IAccountAction {
     constructor(address actionHub) BaseAction(actionHub) {}

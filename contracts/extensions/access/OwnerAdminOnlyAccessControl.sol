@@ -2,11 +2,11 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {Events} from "../../core/types/Events.sol";
-import {RoleBasedAccessControl} from "../../core/access/RoleBasedAccessControl.sol";
-import {Access} from "../../core/interfaces/IRoleBasedAccessControl.sol";
-import {Errors} from "../../core/types/Errors.sol";
-import {ILock} from "../../core/interfaces/ILock.sol";
+import {Events} from "lens-modules/contracts/core/types/Events.sol";
+import {RoleBasedAccessControl} from "lens-modules/contracts/core/access/RoleBasedAccessControl.sol";
+import {Access} from "lens-modules/contracts/core/interfaces/IRoleBasedAccessControl.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
+import {ILock} from "lens-modules/contracts/core/interfaces/ILock.sol";
 
 contract OwnerAdminOnlyAccessControl is RoleBasedAccessControl {
     ILock immutable LOCK;

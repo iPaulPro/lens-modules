@@ -2,15 +2,15 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IPostRule} from "../../interfaces/IPostRule.sol";
-import {IFeedRule} from "../../interfaces/IFeedRule.sol";
-import {IFeed} from "../../interfaces/IFeed.sol";
-import {RulesStorage, RulesLib} from "../../libraries/RulesLib.sol";
-import {RuleProcessingParams, Rule, RuleChange, KeyValue} from "../../types/Types.sol";
-import {EditPostParams, CreatePostParams} from "../../interfaces/IFeed.sol";
-import {RuleBasedPrimitive} from "../../base/RuleBasedPrimitive.sol";
-import {CallLib} from "../../libraries/CallLib.sol";
-import {Errors} from "../../types/Errors.sol";
+import {IPostRule} from "lens-modules/contracts/core/interfaces/IPostRule.sol";
+import {IFeedRule} from "lens-modules/contracts/core/interfaces/IFeedRule.sol";
+import {IFeed} from "lens-modules/contracts/core/interfaces/IFeed.sol";
+import {RulesStorage, RulesLib} from "lens-modules/contracts/core/libraries/RulesLib.sol";
+import {RuleProcessingParams, Rule, RuleChange, KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {EditPostParams, CreatePostParams} from "lens-modules/contracts/core/interfaces/IFeed.sol";
+import {RuleBasedPrimitive} from "lens-modules/contracts/core/base/RuleBasedPrimitive.sol";
+import {CallLib} from "lens-modules/contracts/core/libraries/CallLib.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 abstract contract RuleBasedFeed is IFeed, RuleBasedPrimitive {
     using RulesLib for RulesStorage;
@@ -152,11 +152,6 @@ abstract contract RuleBasedFeed is IFeed, RuleBasedPrimitive {
                 entityId, msg.sender, ruleAddress, configSalt, isRequired, selector
             );
         }
-    }
-
-    function _amountOfRules(bytes4 ruleSelector) internal view returns (uint256) {
-        return $feedRulesStorage()._getRulesArray(ruleSelector, false).length
-            + $feedRulesStorage()._getRulesArray(ruleSelector, true).length;
     }
 
     function getFeedRules(bytes4 ruleSelector, bool isRequired) external view virtual override returns (Rule[] memory) {
@@ -326,7 +321,7 @@ abstract contract RuleBasedFeed is IFeed, RuleBasedPrimitive {
         EditPostParams memory postParams,
         KeyValue[] memory primitiveCustomParams,
         RuleProcessingParams[] memory feedRulesParams
-    ) internal virtual {
+    ) internal {
         _processPostEditing(
             _encodeAndCallProcessEditPostOnFeed,
             ProcessPostEditingParams({

@@ -3,8 +3,8 @@
 pragma solidity ^0.8.26;
 
 import {IERC1155} from "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
-import {OwnableMetadataBasedRule} from "./OwnableMetadataBasedRule.sol";
-import {Errors} from "../../core/types/Errors.sol";
+import {OwnableMetadataBasedRule} from "lens-modules/contracts/rules/base/OwnableMetadataBasedRule.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 interface IToken {
     /**
@@ -29,6 +29,10 @@ abstract contract TokenGatedRule is OwnableMetadataBasedRule {
     }
 
     constructor(address owner, string memory metadataURI) OwnableMetadataBasedRule(owner, metadataURI) {}
+
+    function _initialize(address owner, string memory metadataURI) internal override {
+        super._initialize(owner, metadataURI);
+    }
 
     function _validateTokenGateConfiguration(TokenGateConfiguration memory configuration) internal view {
         require(configuration.amount > 0, Errors.InvalidParameter());

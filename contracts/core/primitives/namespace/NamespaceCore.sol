@@ -2,7 +2,7 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {Errors} from "../../types/Errors.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 library NamespaceCore {
     // Storage
@@ -28,6 +28,7 @@ library NamespaceCore {
     function _createUsername(string memory username) internal {
         require(!$storage().usernameExists[username], Errors.AlreadyExists()); // Username must not exist yet
         require(bytes(username).length > 0, Errors.InvalidParameter()); // Username must not be empty
+        require(bytes(username).length < type(uint8).max, Errors.InvalidParameter()); // Length must be less than 255
         $storage().usernameExists[username] = true;
     }
 

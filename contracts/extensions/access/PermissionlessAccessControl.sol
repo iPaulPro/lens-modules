@@ -2,7 +2,7 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IAccessControl} from "../../core/interfaces/IAccessControl.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
 
 contract PermissionlessAccessControl is IAccessControl {
     /// @custom:keccak lens.contract.AccessControl.PermissionlessAccessControl

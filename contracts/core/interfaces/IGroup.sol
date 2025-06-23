@@ -2,9 +2,9 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {KeyValue, RuleChange, RuleProcessingParams, Rule} from "../types/Types.sol";
-import {IMetadataBased} from "./IMetadataBased.sol";
-import {IAccessControl} from "./IAccessControl.sol";
+import {KeyValue, RuleChange, RuleProcessingParams, Rule} from "lens-modules/contracts/core/types/Types.sol";
+import {IMetadataBased} from "lens-modules/contracts/core/interfaces/IMetadataBased.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
 
 struct Membership {
     uint256 id;
@@ -64,7 +64,7 @@ interface IGroup is IMetadataBased {
 
     event Lens_Group_MetadataURISet(string metadataURI);
 
-    function initialize(string memory metadataURI, IAccessControl accessControl) external;
+    function initialize(string memory metadataURI, IAccessControl accessControl, address foundingMember) external;
 
     function addMember(
         address account,
@@ -107,4 +107,6 @@ interface IGroup is IMetadataBased {
     function getGroupRules(bytes4 ruleSelector, bool isRequired) external view returns (Rule[] memory);
 
     function getExtraData(bytes32 key) external view returns (bytes memory);
+
+    function getMembershipSource(uint256 membershipId) external view returns (address);
 }

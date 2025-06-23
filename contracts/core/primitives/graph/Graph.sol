@@ -2,25 +2,25 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {Follow, IGraph} from "../../interfaces/IGraph.sol";
-import {GraphCore as Core} from "./GraphCore.sol";
-import {IAccessControl} from "../../interfaces/IAccessControl.sol";
-import {RuleChange, RuleProcessingParams, KeyValue} from "../../types/Types.sol";
-import {RuleBasedGraph} from "./RuleBasedGraph.sol";
-import {AccessControlled} from "../../access/AccessControlled.sol";
-import {ExtraStorageBased} from "../../base/ExtraStorageBased.sol";
-import {Events} from "../../types/Events.sol";
-import {SourceStampBased} from "../../base/SourceStampBased.sol";
-import {MetadataBased} from "../../base/MetadataBased.sol";
-import {Initializable} from "../../upgradeability/Initializable.sol";
-import {Errors} from "../../types/Errors.sol";
+import {Follow, IGraph} from "lens-modules/contracts/core/interfaces/IGraph.sol";
+import {GraphCore as Core} from "lens-modules/contracts/core/primitives/graph/GraphCore.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
+import {RuleChange, RuleProcessingParams, KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {RuleBasedGraph} from "lens-modules/contracts/core/primitives/graph/RuleBasedGraph.sol";
+import {AccessControlled} from "lens-modules/contracts/core/access/AccessControlled.sol";
+import {ExtraDataBased} from "lens-modules/contracts/core/base/ExtraDataBased.sol";
+import {Events} from "lens-modules/contracts/core/types/Events.sol";
+import {SourceStampBased} from "lens-modules/contracts/core/base/SourceStampBased.sol";
+import {MetadataBased} from "lens-modules/contracts/core/base/MetadataBased.sol";
+import {Initializable} from "lens-modules/contracts/core/upgradeability/Initializable.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 contract Graph is
     IGraph,
     Initializable,
     RuleBasedGraph,
     AccessControlled,
-    ExtraStorageBased,
+    ExtraDataBased,
     SourceStampBased,
     MetadataBased
 {
@@ -32,6 +32,9 @@ contract Graph is
     uint256 constant PID__SET_METADATA = uint256(0xe40fdb273cda3c78f0d9b6d20f5378755989e26c60c89696e5eea644d84eefea);
     /// @custom:keccak lens.permission.SetExtraData
     uint256 constant PID__SET_EXTRA_DATA = uint256(0x9b4afa2e6d7162f878076bb1210736928cd607a384b985eca0dba5e94790e72a);
+
+    /// @custom:keccak lens.entityType.Follow
+    bytes32 constant ENTITY_TYPE__FOLLOW = 0x36d2d2080fb90910eb85e01c8f8dd668252334986cbeed5f3f2a0d51ae9a49fb;
 
     constructor() {
         _disableInitializers();
@@ -77,23 +80,16 @@ contract Graph is
         require(msg.sender == address(uint160(entityId)), Errors.InvalidMsgSender()); // Follow rules can only be changed in your own account
     }
 
-    function setExtraData(KeyValue[] calldata extraDataToSet) external override {
-        _requireAccess(msg.sender, PID__SET_EXTRA_DATA);
-        for (uint256 i = 0; i < extraDataToSet.length; i++) {
-            bool hadAValueSetBefore = _setExtraStorage_Self(extraDataToSet[i]);
-            bool isNewValueEmpty = extraDataToSet[i].value.length == 0;
-            if (hadAValueSetBefore) {
-                if (isNewValueEmpty) {
-                    emit Lens_Graph_ExtraDataRemoved(extraDataToSet[i].key);
-                } else {
-                    emit Lens_Graph_ExtraDataUpdated(
-                        extraDataToSet[i].key, extraDataToSet[i].value, extraDataToSet[i].value
-                    );
-                }
-            } else if (!isNewValueEmpty) {
-                emit Lens_Graph_ExtraDataAdded(extraDataToSet[i].key, extraDataToSet[i].value, extraDataToSet[i].value);
-            }
-        }
+    function _emitExtraDataAddedEvent(KeyValue calldata extraDataAdded) internal override {
+        emit Lens_Graph_ExtraDataAdded(extraDataAdded.key, extraDataAdded.value, extraDataAdded.value);
+    }
+
+    function _emitExtraDataUpdatedEvent(KeyValue calldata extraDataUpdated) internal override {
+        emit Lens_Graph_ExtraDataUpdated(extraDataUpdated.key, extraDataUpdated.value, extraDataUpdated.value);
+    }
+
+    function _emitExtraDataRemovedEvent(KeyValue calldata extraDataRemoved) internal override {
+        emit Lens_Graph_ExtraDataRemoved(extraDataRemoved.key);
     }
 
     // Public functions
@@ -107,9 +103,9 @@ contract Graph is
         KeyValue[] calldata extraData
     ) external virtual override returns (uint256) {
         require(msg.sender == followerAccount, Errors.InvalidMsgSender());
-        // followId is now in customParams - think if we want to implement this now, or later. For now passing 0 always.
+        // If some implementation wants to allow followId specification, it can be implemented using customParams.
         uint256 assignedFollowId = Core._follow(followerAccount, accountToFollow, 0, block.timestamp);
-        address source = _processSourceStamp(assignedFollowId, customParams);
+        address source = _processSourceStamp(_getFollowEntityType(accountToFollow), assignedFollowId, customParams);
         _graphProcessFollow(msg.sender, followerAccount, accountToFollow, customParams, graphRulesProcessingParams);
         _accountProcessFollow(msg.sender, followerAccount, accountToFollow, customParams, followRulesProcessingParams);
         emit Lens_Graph_Followed(
@@ -133,12 +129,27 @@ contract Graph is
     ) external virtual override returns (uint256) {
         require(msg.sender == followerAccount, Errors.InvalidMsgSender());
         uint256 followId = Core._unfollow(followerAccount, accountToUnfollow);
-        address source = _processSourceStamp(followId, customParams);
+        address source = _processSourceStamp(customParams);
         _graphProcessUnfollow(msg.sender, followerAccount, accountToUnfollow, customParams, graphRulesProcessingParams);
+        /**
+         * Clears follow source when unfollowing. A Graph primitive implementation that tokenizes follows might want to
+         * store an additional DATA__CREATION_SOURCE for when the first follow, which minted the token, was done, and
+         * keep it until the follow token is burnt.
+         */
+        _clearSource(_getFollowEntityType(accountToUnfollow), followId);
         emit Lens_Graph_Unfollowed(
             followerAccount, accountToUnfollow, followId, customParams, graphRulesProcessingParams, source
         );
         return followId;
+    }
+
+    function setExtraData(KeyValue[] calldata extraDataToSet) external override {
+        _requireAccess(msg.sender, PID__SET_EXTRA_DATA);
+        _setExtraData(extraDataToSet);
+    }
+
+    function _getFollowEntityType(address targetAccount) internal pure virtual returns (uint256) {
+        return uint256(keccak256(abi.encode(ENTITY_TYPE__FOLLOW, targetAccount)));
     }
 
     // Getters
@@ -168,6 +179,10 @@ contract Graph is
     }
 
     function getExtraData(bytes32 key) external view override returns (bytes memory) {
-        return _getExtraStorage_Self(key);
+        return _getExtraData(key);
+    }
+
+    function getFollowSource(address followedAccount, uint256 followId) external view override returns (address) {
+        return _getSource(_getFollowEntityType(followedAccount), followId);
     }
 }

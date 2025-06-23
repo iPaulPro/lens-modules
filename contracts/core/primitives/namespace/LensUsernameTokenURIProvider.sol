@@ -2,11 +2,11 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {ITokenURIProvider} from "../../interfaces/ITokenURIProvider.sol";
+import {ITokenURIProvider} from "lens-modules/contracts/core/interfaces/ITokenURIProvider.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
-import {Events} from "../../types/Events.sol";
-import {IERC721Namespace} from "../../interfaces/IERC721Namespace.sol";
+import {Events} from "lens-modules/contracts/core/types/Events.sol";
+import {IERC721Namespace} from "lens-modules/contracts/core/interfaces/IERC721Namespace.sol";
 
 contract LensUsernameTokenURIProvider is ITokenURIProvider {
     using Strings for uint256;

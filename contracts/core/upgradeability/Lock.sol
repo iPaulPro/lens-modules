@@ -2,10 +2,11 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {ILock} from "../interfaces/ILock.sol";
-import {Ownable} from "../access/Ownable.sol";
+import {ILock} from "lens-modules/contracts/core/interfaces/ILock.sol";
+import {Ownable} from "lens-modules/contracts/core/access/Ownable.sol";
+import {EventEmitterEarly} from "lens-modules/contracts/migration/EventEmitterEarly.sol";
 
-contract Lock is Ownable, ILock {
+contract Lock is Ownable, ILock, EventEmitterEarly {
     event Lens_Lock_LockStatusSet(bool indexed locked);
     event Lens_Lock_LockStatusSet(address indexed target, bool indexed locked);
 

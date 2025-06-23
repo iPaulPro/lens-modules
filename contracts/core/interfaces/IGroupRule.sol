@@ -2,7 +2,7 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {KeyValue} from "../types/Types.sol";
+import {KeyValue} from "lens-modules/contracts/core/types/Types.sol";
 
 interface IGroupRule {
     function configure(bytes32 configSalt, KeyValue[] calldata ruleParams) external;

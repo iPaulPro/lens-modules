@@ -2,21 +2,39 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IFeedRule} from "../core/interfaces/IFeedRule.sol";
-import {IGraphRule} from "../core/interfaces/IGraphRule.sol";
-import {CreatePostParams, EditPostParams} from "../core/interfaces/IFeed.sol";
-import {KeyValue, RuleChange} from "../core/types/Types.sol";
-import {IFeed} from "../core/interfaces/IFeed.sol";
-import {OwnableMetadataBasedRule} from "./base/OwnableMetadataBasedRule.sol";
-import {Errors} from "../core/types/Errors.sol";
+import {IFeedRule} from "lens-modules/contracts/core/interfaces/IFeedRule.sol";
+import {IGraphRule} from "lens-modules/contracts/core/interfaces/IGraphRule.sol";
+import {CreatePostParams, EditPostParams} from "lens-modules/contracts/core/interfaces/IFeed.sol";
+import {KeyValue, RuleChange} from "lens-modules/contracts/core/types/Types.sol";
+import {IFeed} from "lens-modules/contracts/core/interfaces/IFeed.sol";
+import {OwnableMetadataBasedRule} from "lens-modules/contracts/rules/base/OwnableMetadataBasedRule.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
+import {Initializable} from "lens-modules/contracts/core/upgradeability/Initializable.sol";
 
-contract AccountBlockingRule is IFeedRule, IGraphRule, OwnableMetadataBasedRule {
-    event Lens_AccountBlocking_AccountBlocked(address indexed source, address indexed target, uint256 timestamp);
-    event Lens_AccountBlocking_UserUnblocked(address indexed source, address indexed target);
+contract AccountBlockingRule is OwnableMetadataBasedRule, Initializable, IFeedRule, IGraphRule {
+    event Lens_AccountBlocking_AccountBlocked(address indexed source, address indexed target);
+    event Lens_AccountBlocking_AccountUnblocked(address indexed source, address indexed target);
 
-    mapping(address => mapping(address => uint256)) public accountBlocks;
+    struct Storage {
+        mapping(address source => mapping(address target => bool isBlocked)) isBlocked;
+    }
 
-    constructor(address owner, string memory metadataURI) OwnableMetadataBasedRule(owner, metadataURI) {}
+    /// @custom:keccak lens.storage.AccountBlockingRule
+    bytes32 constant STORAGE__ACCOUNT_BLOCKING_RULE = 0xe12472e4fa1ab16991a1a948dff8ec39ff46bdd19194555f802f78a18b5506a0;
+
+    function $storage() private pure returns (Storage storage _storage) {
+        assembly {
+            _storage.slot := STORAGE__ACCOUNT_BLOCKING_RULE
+        }
+    }
+
+    constructor() OwnableMetadataBasedRule(address(0), "") {
+        _disableInitializers();
+    }
+
+    function initialize(address owner, string memory metadataURI) external initializer {
+        OwnableMetadataBasedRule._initialize(owner, metadataURI);
+    }
 
     function configure(bytes32, /* salt */ KeyValue[] calldata /* ruleConfigurationParams */ )
         external
@@ -27,12 +45,16 @@ contract AccountBlockingRule is IFeedRule, IGraphRule, OwnableMetadataBasedRule 
     function blockUser(address source, address target) external {
         require(msg.sender == source, Errors.InvalidMsgSender());
         require(source != target, Errors.ActionOnSelf());
-        accountBlocks[source][target] = block.timestamp;
+        require(!$storage().isBlocked[source][target], Errors.RedundantStateChange());
+        $storage().isBlocked[source][target] = true;
+        emit Lens_AccountBlocking_AccountBlocked(source, target);
     }
 
     function unblockUser(address source, address target) external {
         require(msg.sender == source, Errors.InvalidMsgSender());
-        accountBlocks[msg.sender][target] = 0;
+        require($storage().isBlocked[source][target], Errors.RedundantStateChange());
+        $storage().isBlocked[source][target] = false;
+        emit Lens_AccountBlocking_AccountUnblocked(source, target);
     }
 
     function processCreatePost(
@@ -47,10 +69,10 @@ contract AccountBlockingRule is IFeedRule, IGraphRule, OwnableMetadataBasedRule 
             address repliedToAuthor = IFeed(msg.sender).getPostAuthor(postParams.repliedPostId);
             uint256 rootPostId = IFeed(msg.sender).getPost(postId).rootPostId;
             address rootAuthor = IFeed(msg.sender).getPostAuthor(rootPostId);
-            if (_isBlocked({source: repliedToAuthor, blockTarget: author})) {
+            if ($storage().isBlocked[repliedToAuthor][author]) {
                 revert Errors.Blocked();
             }
-            if (_isBlocked({source: rootAuthor, blockTarget: author})) {
+            if ($storage().isBlocked[rootAuthor][author]) {
                 revert Errors.Blocked();
             }
         }
@@ -64,17 +86,13 @@ contract AccountBlockingRule is IFeedRule, IGraphRule, OwnableMetadataBasedRule 
         KeyValue[] calldata, /* primitiveCustomParams */
         KeyValue[] calldata /* ruleExecutionParams */
     ) external view {
-        if (_isBlocked({source: accountToFollow, blockTarget: followerAccount})) {
+        if ($storage().isBlocked[accountToFollow][followerAccount]) {
             revert Errors.Blocked();
         }
     }
 
     function isBlocked(address source, address blockTarget) external view returns (bool) {
-        return _isBlocked(source, blockTarget);
-    }
-
-    function _isBlocked(address source, address blockTarget) internal view returns (bool) {
-        return accountBlocks[source][blockTarget] > 0;
+        return $storage().isBlocked[source][blockTarget];
     }
 
     // Unimplemented functions

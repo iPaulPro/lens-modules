@@ -2,17 +2,19 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IAccessControl} from "../../core/interfaces/IAccessControl.sol";
-import {Feed} from "../../core/primitives/feed/Feed.sol";
-import {RuleChange, KeyValue} from "../../core/types/Types.sol";
-import {BeaconProxy} from "../../core/upgradeability/BeaconProxy.sol";
-import {ProxyAdmin} from "../../core/upgradeability/ProxyAdmin.sol";
-import {PrimitiveFactory} from "./PrimitiveFactory.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
+import {Feed} from "lens-modules/contracts/core/primitives/feed/Feed.sol";
+import {RuleChange, KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {BeaconProxy} from "lens-modules/contracts/core/upgradeability/BeaconProxy.sol";
+import {ProxyAdmin} from "lens-modules/contracts/core/upgradeability/ProxyAdmin.sol";
+import {PrimitiveFactory} from "lens-modules/contracts/extensions/factories/PrimitiveFactory.sol";
 
 contract FeedFactory is PrimitiveFactory {
     event Lens_FeedFactory_Deployment(address indexed feed, string metadataURI);
 
-    constructor(address primitiveBeacon, address proxyAdminLock) PrimitiveFactory(primitiveBeacon, proxyAdminLock) {}
+    constructor(address primitiveBeacon, address proxyAdminLock, address lensFactory)
+        PrimitiveFactory(primitiveBeacon, proxyAdminLock, lensFactory)
+    {}
 
     function deployFeed(
         string memory metadataURI,
@@ -20,7 +22,7 @@ contract FeedFactory is PrimitiveFactory {
         address proxyAdminOwner,
         RuleChange[] calldata ruleChanges,
         KeyValue[] calldata extraData
-    ) external returns (address) {
+    ) external onlyLensFactory returns (address) {
         address proxyAdmin = address(new ProxyAdmin(proxyAdminOwner, PROXY_ADMIN_LOCK));
         Feed feed = Feed(address(new BeaconProxy(proxyAdmin, PRIMITIVE_BEACON)));
         feed.initialize(metadataURI, TEMPORARY_ACCESS_CONTROL);

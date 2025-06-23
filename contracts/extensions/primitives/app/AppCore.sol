@@ -2,8 +2,8 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import "../../../core/libraries/KeyValueStorageLib.sol";
-import {Errors} from "../../../core/types/Errors.sol";
+import "lens-modules/contracts/core/libraries/KeyValueStorageLib.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 struct ArrayStorageHelper {
     uint8 index;

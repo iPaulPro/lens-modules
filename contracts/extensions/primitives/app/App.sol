@@ -2,17 +2,17 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IAccessControl} from "../../../core/interfaces/IAccessControl.sol";
-import {IApp} from "./IApp.sol";
-import {AppCore as Core} from "./AppCore.sol";
-import {KeyValue, SourceStamp} from "../../../core/types/Types.sol";
-import {AccessControlled} from "../../../core/access/AccessControlled.sol";
-import {Events} from "../../../core/types/Events.sol";
-import {BaseSource} from "../../../core/base/BaseSource.sol";
-import {ISource} from "../../../core/interfaces/ISource.sol";
-import {Initializable} from "../../../core/upgradeability/Initializable.sol";
-import {ExtraStorageBased} from "../../../core/base/ExtraStorageBased.sol";
-import {MetadataBased} from "../../../core/base/MetadataBased.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
+import {IApp} from "lens-modules/contracts/extensions/primitives/app/IApp.sol";
+import {AppCore as Core} from "lens-modules/contracts/extensions/primitives/app/AppCore.sol";
+import {KeyValue, SourceStamp} from "lens-modules/contracts/core/types/Types.sol";
+import {AccessControlled} from "lens-modules/contracts/core/access/AccessControlled.sol";
+import {Events} from "lens-modules/contracts/core/types/Events.sol";
+import {BaseSource} from "lens-modules/contracts/core/base/BaseSource.sol";
+import {ISource} from "lens-modules/contracts/core/interfaces/ISource.sol";
+import {Initializable} from "lens-modules/contracts/core/upgradeability/Initializable.sol";
+import {ExtraDataBased} from "lens-modules/contracts/core/base/ExtraDataBased.sol";
+import {MetadataBased} from "lens-modules/contracts/core/base/MetadataBased.sol";
 
 struct AppInitialProperties {
     address graph;
@@ -25,7 +25,7 @@ struct AppInitialProperties {
     address treasury;
 }
 
-contract App is IApp, ExtraStorageBased, MetadataBased, Initializable, BaseSource, AccessControlled {
+contract App is IApp, ExtraDataBased, MetadataBased, Initializable, BaseSource, AccessControlled {
     // Resource IDs involved in the contract
 
     /// @custom:keccak lens.permission.SetPrimitives
@@ -53,7 +53,7 @@ contract App is IApp, ExtraStorageBased, MetadataBased, Initializable, BaseSourc
         bool isSourceStampVerificationEnabled,
         IAccessControl accessControl,
         AppInitialProperties memory initialProps,
-        KeyValue[] memory extraData
+        KeyValue[] calldata extraData
     ) external override initializer {
         _initialize(metadataURI, isSourceStampVerificationEnabled, initialProps, extraData);
         AccessControlled._initialize(accessControl);
@@ -63,11 +63,10 @@ contract App is IApp, ExtraStorageBased, MetadataBased, Initializable, BaseSourc
         string memory metadataURI,
         bool isSourceStampVerificationEnabled,
         AppInitialProperties memory initialProps,
-        KeyValue[] memory extraData
+        KeyValue[] calldata extraData
     ) internal {
-        if (bytes(metadataURI).length > 0) {
-            _setMetadataURI(metadataURI);
-        }
+        _setMetadataURI(metadataURI);
+
         _setSourceStampVerification(isSourceStampVerificationEnabled);
         if (initialProps.treasury != address(0)) {
             _setTreasury(initialProps.treasury);
@@ -242,7 +241,11 @@ contract App is IApp, ExtraStorageBased, MetadataBased, Initializable, BaseSourc
     }
 
     function _removeGroups(address[] memory groups) internal {
+        address defaultGroup = Core.$storage().defaultGroup;
         for (uint256 i = 0; i < groups.length; i++) {
+            if (groups[i] == defaultGroup) {
+                _setDefaultGroup(address(0));
+            }
             Core._removeGroup(groups[i]);
             emit Lens_App_GroupRemoved(groups[i]);
         }
@@ -337,22 +340,16 @@ contract App is IApp, ExtraStorageBased, MetadataBased, Initializable, BaseSourc
         _setExtraData(extraDataToSet);
     }
 
-    function _setExtraData(KeyValue[] memory extraDataToSet) internal {
-        for (uint256 i = 0; i < extraDataToSet.length; i++) {
-            bool hadAValueSetBefore = _setExtraStorage_Self(extraDataToSet[i]);
-            bool isNewValueEmpty = extraDataToSet[i].value.length == 0;
-            if (hadAValueSetBefore) {
-                if (isNewValueEmpty) {
-                    emit Lens_App_ExtraDataRemoved(extraDataToSet[i].key);
-                } else {
-                    emit Lens_App_ExtraDataUpdated(
-                        extraDataToSet[i].key, extraDataToSet[i].value, extraDataToSet[i].value
-                    );
-                }
-            } else if (!isNewValueEmpty) {
-                emit Lens_App_ExtraDataAdded(extraDataToSet[i].key, extraDataToSet[i].value, extraDataToSet[i].value);
-            }
-        }
+    function _emitExtraDataAddedEvent(KeyValue calldata extraDataAdded) internal override {
+        emit Lens_App_ExtraDataAdded(extraDataAdded.key, extraDataAdded.value, extraDataAdded.value);
+    }
+
+    function _emitExtraDataUpdatedEvent(KeyValue calldata extraDataUpdated) internal override {
+        emit Lens_App_ExtraDataUpdated(extraDataUpdated.key, extraDataUpdated.value, extraDataUpdated.value);
+    }
+
+    function _emitExtraDataRemovedEvent(KeyValue calldata extraDataRemoved) internal override {
+        emit Lens_App_ExtraDataRemoved(extraDataRemoved.key);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -400,6 +397,6 @@ contract App is IApp, ExtraStorageBased, MetadataBased, Initializable, BaseSourc
     }
 
     function getExtraData(bytes32 key) external view override returns (bytes memory) {
-        return _getExtraStorage_Self(key);
+        return _getExtraData(key);
     }
 }

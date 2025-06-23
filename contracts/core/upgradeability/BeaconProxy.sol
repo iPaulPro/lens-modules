@@ -2,8 +2,8 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IVersionedBeacon} from "../interfaces/IVersionedBeacon.sol";
-import {Errors} from "../types/Errors.sol";
+import {IVersionedBeacon} from "lens-modules/contracts/core/interfaces/IVersionedBeacon.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 contract BeaconProxy {
     /**

@@ -2,11 +2,11 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {ILock} from "../interfaces/ILock.sol";
-import {BeaconProxy} from "./BeaconProxy.sol";
-import {Ownable} from "../access/Ownable.sol";
-import {CallLib} from "../libraries/CallLib.sol";
-import {Errors} from "../types/Errors.sol";
+import {ILock} from "lens-modules/contracts/core/interfaces/ILock.sol";
+import {BeaconProxy} from "lens-modules/contracts/core/upgradeability/BeaconProxy.sol";
+import {Ownable} from "lens-modules/contracts/core/access/Ownable.sol";
+import {CallLib} from "lens-modules/contracts/core/libraries/CallLib.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 contract ProxyAdmin is Ownable {
     using CallLib for address;

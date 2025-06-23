@@ -2,11 +2,11 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IAccessControl} from "../../core/interfaces/IAccessControl.sol";
-import {AppInitialProperties, App} from "../primitives/app/App.sol";
-import {KeyValue} from "../../core/types/Types.sol";
-import {BeaconProxy} from "../../core/upgradeability/BeaconProxy.sol";
-import {ProxyAdmin} from "../../core/upgradeability/ProxyAdmin.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
+import {AppInitialProperties, App} from "lens-modules/contracts/extensions/primitives/app/App.sol";
+import {KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {BeaconProxy} from "lens-modules/contracts/core/upgradeability/BeaconProxy.sol";
+import {ProxyAdmin} from "lens-modules/contracts/core/upgradeability/ProxyAdmin.sol";
 
 contract AppFactory {
     event Lens_AppFactory_Deployment(address indexed app, string metadataURI, KeyValue[] extraData);

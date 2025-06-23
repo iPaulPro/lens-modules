@@ -6,9 +6,9 @@ pragma solidity ^0.8.26;
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
-import "../interfaces/ITokenURIProvider.sol";
-import "../interfaces/IERC4906Events.sol";
-import {Errors} from "../types/Errors.sol";
+import "lens-modules/contracts/core/interfaces/ITokenURIProvider.sol";
+import "lens-modules/contracts/core/interfaces/IERC4906Events.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 import {IERC165} from "@openzeppelin/contracts/interfaces/IERC165.sol";
 import {ERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
@@ -92,6 +92,7 @@ abstract contract LensERC721 is IERC721Metadata, ERC165 {
 
     function setTokenURIProvider(ITokenURIProvider tokenURIProvider) external virtual {
         _beforeTokenURIProviderSet(tokenURIProvider);
+        // solc-ignore-next-line unreachable
         $erc721Storage().tokenURIProvider = tokenURIProvider;
         emit IERC4906Events.BatchMetadataUpdate(0, type(uint256).max);
         emit Lens_ERC721_TokenURIProviderSet(address(tokenURIProvider));

@@ -2,10 +2,11 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IAccessControl} from "../interfaces/IAccessControl.sol";
-import {AccessControlLib} from "../libraries/AccessControlLib.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
+import {AccessControlLib} from "lens-modules/contracts/core/libraries/AccessControlLib.sol";
+import {IAccessControlled} from "lens-modules/contracts/core/interfaces/IAccessControlled.sol";
 
-abstract contract AccessControlled {
+abstract contract AccessControlled is IAccessControlled {
     using AccessControlLib for IAccessControl;
     using AccessControlLib for address;
 
@@ -28,11 +29,6 @@ abstract contract AccessControlled {
     function _initialize(IAccessControl accessControl) internal {
         accessControl.verifyHasAccessFunction();
         _setAccessControl(accessControl);
-    }
-
-    modifier requireAccess(uint256 permissionId) {
-        _requireAccess(msg.sender, permissionId);
-        _;
     }
 
     function _emitPIDs() internal virtual {}
@@ -70,7 +66,7 @@ abstract contract AccessControlled {
 
     // Getters
 
-    function getAccessControl() external view returns (IAccessControl) {
+    function getAccessControl() external view override returns (IAccessControl) {
         return _accessControl();
     }
 }

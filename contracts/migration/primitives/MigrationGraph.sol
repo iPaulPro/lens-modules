@@ -2,22 +2,17 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {GraphCore as Core} from "../../core/primitives/graph/GraphCore.sol";
-import {Graph} from "../../core/primitives/graph/Graph.sol";
-import {RuleProcessingParams, KeyValue} from "../../core/types/Types.sol";
-import {Follow} from "../../core/interfaces/IGraph.sol";
-import {Errors} from "../../core/types/Errors.sol";
-import {WHITELISTED_MULTICALL_ADDRESS} from "../WhitelistedMulticall.sol";
+import {GraphCore as Core} from "lens-modules/contracts/core/primitives/graph/GraphCore.sol";
+import {Graph} from "lens-modules/contracts/core/primitives/graph/Graph.sol";
+import {RuleProcessingParams, KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {Follow} from "lens-modules/contracts/core/interfaces/IGraph.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
+import {EventEmitter} from "lens-modules/contracts/migration/EventEmitter.sol";
 
 /**
  * Special Graph implementation to allow data migrations from Lens V2 to Lens V3
  */
-contract MigrationGraph is Graph {
-    modifier onlyWhitelistedMulticall() {
-        require(msg.sender == WHITELISTED_MULTICALL_ADDRESS, Errors.InvalidMsgSender());
-        _;
-    }
-
+contract MigrationGraph is Graph, EventEmitter {
     function follow(
         address followerAccount,
         address accountToFollow,
@@ -25,7 +20,7 @@ contract MigrationGraph is Graph {
         RuleProcessingParams[] calldata graphRulesProcessingParams,
         RuleProcessingParams[] calldata followRulesProcessingParams,
         KeyValue[] calldata extraData
-    ) external override onlyWhitelistedMulticall returns (uint256) {
+    ) external override returns (uint256) {
         require(customParams.length > 0, Errors.InvalidParameter());
         (uint256 followId, uint256 timestamp) = abi.decode(customParams[0].value, (uint256, uint256));
         _migrateFollow(followerAccount, accountToFollow, followId, timestamp);
@@ -58,23 +53,5 @@ contract MigrationGraph is Graph {
         Core.$storage().followers[accountToFollow][followId] = followerAccount;
         Core.$storage().followersCount[accountToFollow]++;
         Core.$storage().followingCount[followerAccount]++;
-    }
-
-    function unfollow(
-        address followerAccount,
-        address accountToUnfollow,
-        KeyValue[] calldata customParams,
-        RuleProcessingParams[] calldata graphRulesProcessingParams
-    ) external override onlyWhitelistedMulticall returns (uint256) {
-        // !!! MIGRATION ONLY
-        // require(msg.sender == followerAccount, Errors.InvalidMsgSender());
-        uint256 followId = Core._unfollow(followerAccount, accountToUnfollow);
-        address source = _processSourceStamp(followId, customParams);
-        // !!! MIGRATION ONLY
-        // _graphProcessUnfollow(msg.sender, followerAccount, accountToUnfollow, customParams, graphRulesProcessingParams);
-        emit Lens_Graph_Unfollowed(
-            followerAccount, accountToUnfollow, followId, customParams, graphRulesProcessingParams, source
-        );
-        return followId;
     }
 }

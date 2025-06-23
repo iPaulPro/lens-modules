@@ -2,7 +2,7 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {KeyValue} from "../types/Types.sol";
+import {KeyValue} from "lens-modules/contracts/core/types/Types.sol";
 
 library KeyValueStorageLib {
     function set(mapping(bytes32 => bytes) storage _keyValueStorage, KeyValue memory keyValueToSet)

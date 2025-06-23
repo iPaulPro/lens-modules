@@ -2,13 +2,20 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {INamespaceRule} from "../../core/interfaces/INamespaceRule.sol";
-import {KeyValue} from "../../core/types/Types.sol";
-import {OwnableMetadataBasedRule} from "../base/OwnableMetadataBasedRule.sol";
-import {Errors} from "../../core/types/Errors.sol";
+import {INamespaceRule} from "lens-modules/contracts/core/interfaces/INamespaceRule.sol";
+import {KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {OwnableMetadataBasedRule} from "lens-modules/contracts/rules/base/OwnableMetadataBasedRule.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
+import {Initializable} from "lens-modules/contracts/core/upgradeability/Initializable.sol";
 
-contract UsernameSimpleCharsetNamespaceRule is INamespaceRule, OwnableMetadataBasedRule {
-    constructor(address owner, string memory metadataURI) OwnableMetadataBasedRule(owner, metadataURI) {}
+contract UsernameSimpleCharsetNamespaceRule is OwnableMetadataBasedRule, Initializable, INamespaceRule {
+    constructor() OwnableMetadataBasedRule(address(0), "") {
+        _disableInitializers();
+    }
+
+    function initialize(address owner, string memory metadataURI) external initializer {
+        OwnableMetadataBasedRule._initialize(owner, metadataURI);
+    }
 
     function configure(bytes32, /* configSalt */ KeyValue[] calldata /* ruleParams */ ) external override {}
 

@@ -2,9 +2,9 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {Rule, RuleChange, RuleSelectorChange} from "../types/Types.sol";
-import {CallLib} from "./CallLib.sol";
-import {Errors} from "../types/Errors.sol";
+import {Rule, RuleChange, RuleSelectorChange} from "lens-modules/contracts/core/types/Types.sol";
+import {CallLib} from "lens-modules/contracts/core/libraries/CallLib.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 struct RulesStorage {
     mapping(bytes4 => Rule[]) requiredRules;

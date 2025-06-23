@@ -2,12 +2,17 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IAccessControl} from "./IAccessControl.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
 
 enum Access {
     UNDEFINED,
     GRANTED,
     DENIED
+}
+
+struct Role {
+    address account;
+    uint256 roleId;
 }
 
 interface IRoleBasedAccessControl is IAccessControl {
@@ -28,6 +33,10 @@ interface IRoleBasedAccessControl is IAccessControl {
     function grantRole(address account, uint256 roleId) external;
 
     function revokeRole(address account, uint256 roleId) external;
+
+    function grantRoles(Role[] calldata roles) external;
+
+    function revokeRoles(Role[] calldata roles) external;
 
     function hasRole(address account, uint256 roleId) external view returns (bool);
 

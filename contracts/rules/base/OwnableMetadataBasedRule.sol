@@ -2,13 +2,18 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {Ownable} from "../../core/access/Ownable.sol";
-import {MetadataBased} from "../../core/base/MetadataBased.sol";
+import {Ownable} from "lens-modules/contracts/core/access/Ownable.sol";
+import {MetadataBased} from "lens-modules/contracts/core/base/MetadataBased.sol";
 
 abstract contract OwnableMetadataBasedRule is Ownable, MetadataBased {
     event Lens_Rule_MetadataURISet(string metadataURI);
 
     constructor(address owner, string memory metadataURI) {
+        _transferOwnership(owner);
+        _setMetadataURI(metadataURI);
+    }
+
+    function _initialize(address owner, string memory metadataURI) internal virtual {
         _transferOwnership(owner);
         _setMetadataURI(metadataURI);
     }

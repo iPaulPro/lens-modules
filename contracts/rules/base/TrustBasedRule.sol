@@ -2,7 +2,7 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {Errors} from "../../core/types/Errors.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 abstract contract TrustBasedRule {
     event Lens_Rule_Trusted(address indexed account, address indexed trustedAddress);

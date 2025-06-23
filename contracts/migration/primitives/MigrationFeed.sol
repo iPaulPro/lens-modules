@@ -2,13 +2,13 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {KeyValue, RuleProcessingParams} from "../../core/types/Types.sol";
-import {CreatePostParams, EditPostParams} from "../../core/interfaces/IFeed.sol";
-import {FeedCore as Core, PostStorage} from "../../core/primitives/feed/FeedCore.sol";
-import {Feed} from "../../core/primitives/feed/Feed.sol";
-import {Errors} from "../../core/types/Errors.sol";
-import {KeyValueStorageLib} from "../../core/libraries/KeyValueStorageLib.sol";
-import {WHITELISTED_MULTICALL_ADDRESS} from "../WhitelistedMulticall.sol";
+import {KeyValue, RuleProcessingParams} from "lens-modules/contracts/core/types/Types.sol";
+import {CreatePostParams} from "lens-modules/contracts/core/interfaces/IFeed.sol";
+import {FeedCore as Core, PostStorage} from "lens-modules/contracts/core/primitives/feed/FeedCore.sol";
+import {Feed} from "lens-modules/contracts/core/primitives/feed/Feed.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
+import {KeyValueStorageLib} from "lens-modules/contracts/core/libraries/KeyValueStorageLib.sol";
+import {WhitelistedAddresses} from "lens-modules/contracts/migration/WhitelistedAddresses.sol";
 
 struct PostCreationParams {
     uint256 authorPostSequentialId;
@@ -18,11 +18,6 @@ struct PostCreationParams {
 
 contract MigrationFeed is Feed {
     using KeyValueStorageLib for mapping(bytes32 => bytes);
-
-    modifier onlyWhitelistedMulticall() {
-        require(msg.sender == WHITELISTED_MULTICALL_ADDRESS, Errors.InvalidMsgSender());
-        _;
-    }
 
     function $migrationExtraStorage() private pure returns (ExtraStorage storage _storage) {
         assembly {
@@ -36,7 +31,8 @@ contract MigrationFeed is Feed {
         RuleProcessingParams[] memory feedRulesParams,
         RuleProcessingParams[] memory rootPostRulesParams,
         RuleProcessingParams[] memory quotedPostRulesParams
-    ) external override onlyWhitelistedMulticall returns (uint256) {
+    ) external override returns (uint256) {
+        WhitelistedAddresses.requireWhitelisted(msg.sender);
         require(customParams.length > 0, Errors.InvalidParameter());
         PostCreationParams memory postCreationParams = abi.decode(customParams[0].value, (PostCreationParams));
         (uint256 postId, uint256 rootPostId) =
@@ -78,9 +74,9 @@ contract MigrationFeed is Feed {
         uint256 entityId,
         KeyValue memory extraDataToSet
     ) private {
-        // In this release we always set the entityID to zero
+        // In this release we always set the entityType to zero
         $migrationExtraStorage().slot[addressScope][0][entityId].set(extraDataToSet);
-        emit Lens_ExtraStorageSet(addressScope, entityId, extraDataToSet.key, extraDataToSet.value);
+        emit Lens_ExtraStorageSet(addressScope, 0, entityId, extraDataToSet.key, extraDataToSet.value);
     }
 
     // Overriding the FeedCore
@@ -133,35 +129,9 @@ contract MigrationFeed is Feed {
         return (postId, rootPostId);
     }
 
-    function _processPostEditingOnFeed(
-        uint256 postId,
-        EditPostParams memory postParams,
-        KeyValue[] memory primitiveCustomParams,
-        RuleProcessingParams[] memory feedRulesParams
-    ) internal override onlyWhitelistedMulticall {
-        super._processPostEditingOnFeed(postId, postParams, primitiveCustomParams, feedRulesParams);
-    }
-
-    function deletePost(
-        uint256 postId,
-        KeyValue[] calldata customParams,
-        RuleProcessingParams[] calldata /* feedRulesParams */
-    ) external override onlyWhitelistedMulticall {
-        require(Core._postExists(postId), Errors.DoesNotExist());
-        address author = Core.$storage().posts[postId].author;
-        // !!! MIGRATION ONLY
-        // require(msg.sender == author || _hasAccess(msg.sender, PID__REMOVE_POST), Errors.InvalidMsgSender());
-        Core._removePost(postId);
-        // !!! MIGRATION ONLY
-        // _processPostDeletion(postId, customParams, feedRulesParams);
-        address source = _processSourceStamp(postId, customParams);
-        emit Lens_Feed_PostDeleted(postId, author, customParams, source);
-    }
-
-    function migration_force__setAuthorPostCount(address author, uint256 authorPostCount)
-        external
-        onlyWhitelistedMulticall
-    {
+    // This should be removed after the migration
+    function migration_force__setAuthorPostCount(address author, uint256 authorPostCount) external {
+        WhitelistedAddresses.requireWhitelisted(msg.sender);
         if (Core.$storage().authorPostCount[author] < authorPostCount) {
             require(Core._postExists(Core._generatePostId(author, authorPostCount)), Errors.DoesNotExist());
             require(

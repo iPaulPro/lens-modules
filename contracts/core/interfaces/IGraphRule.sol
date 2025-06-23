@@ -2,7 +2,7 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {KeyValue, RuleChange} from "../types/Types.sol";
+import {KeyValue, RuleChange} from "lens-modules/contracts/core/types/Types.sol";
 
 interface IGraphRule {
     function configure(bytes32 configSalt, KeyValue[] calldata ruleParams) external;

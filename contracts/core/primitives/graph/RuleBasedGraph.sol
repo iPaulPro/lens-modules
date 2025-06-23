@@ -2,14 +2,14 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IFollowRule} from "../../interfaces/IFollowRule.sol";
-import {IGraphRule} from "../../interfaces/IGraphRule.sol";
-import {RulesStorage, RulesLib} from "../../libraries/RulesLib.sol";
-import {RuleProcessingParams, RuleChange, Rule, KeyValue} from "../../types/Types.sol";
-import {IGraph} from "../../interfaces/IGraph.sol";
-import {RuleBasedPrimitive} from "../../base/RuleBasedPrimitive.sol";
-import {CallLib} from "../../libraries/CallLib.sol";
-import {Errors} from "../../types/Errors.sol";
+import {IFollowRule} from "lens-modules/contracts/core/interfaces/IFollowRule.sol";
+import {IGraphRule} from "lens-modules/contracts/core/interfaces/IGraphRule.sol";
+import {RulesStorage, RulesLib} from "lens-modules/contracts/core/libraries/RulesLib.sol";
+import {RuleProcessingParams, RuleChange, Rule, KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {IGraph} from "lens-modules/contracts/core/interfaces/IGraph.sol";
+import {RuleBasedPrimitive} from "lens-modules/contracts/core/base/RuleBasedPrimitive.sol";
+import {CallLib} from "lens-modules/contracts/core/libraries/CallLib.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 abstract contract RuleBasedGraph is IGraph, RuleBasedPrimitive {
     using RulesLib for RulesStorage;
@@ -149,11 +149,6 @@ abstract contract RuleBasedGraph is IGraph, RuleBasedPrimitive {
         } else {
             emit IGraph.Lens_Graph_Follow_RuleSelectorDisabled(account, ruleAddress, configSalt, isRequired, selector);
         }
-    }
-
-    function _amountOfRules(bytes4 ruleSelector) internal view returns (uint256) {
-        return $graphRulesStorage()._getRulesArray(ruleSelector, false).length
-            + $graphRulesStorage()._getRulesArray(ruleSelector, true).length;
     }
 
     function getGraphRules(bytes4 ruleSelector, bool isRequired)

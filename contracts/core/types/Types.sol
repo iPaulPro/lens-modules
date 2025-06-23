@@ -44,3 +44,8 @@ struct SourceStamp {
     uint256 deadline;
     bytes signature;
 }
+
+struct RecipientData {
+    address recipient;
+    uint16 splitBps; // In Basis Points, each Basis Point represents 0.01%
+}

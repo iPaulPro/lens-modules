@@ -2,7 +2,7 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import "../../../core/types/Errors.sol";
+import "lens-modules/contracts/core/types/Errors.sol";
 
 library WhitelistedAddresses {
     function requireWhitelisted(address account) internal pure {

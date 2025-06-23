@@ -2,13 +2,13 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IGroupRule} from "../../interfaces/IGroupRule.sol";
-import {IGroup} from "../../interfaces/IGroup.sol";
-import {RulesStorage, RulesLib} from "../../libraries/RulesLib.sol";
-import {RuleChange, RuleProcessingParams, Rule, KeyValue} from "../../types/Types.sol";
-import {RuleBasedPrimitive} from "../../base/RuleBasedPrimitive.sol";
-import {CallLib} from "../../libraries/CallLib.sol";
-import {Errors} from "../../types/Errors.sol";
+import {IGroupRule} from "lens-modules/contracts/core/interfaces/IGroupRule.sol";
+import {IGroup} from "lens-modules/contracts/core/interfaces/IGroup.sol";
+import {RulesStorage, RulesLib} from "lens-modules/contracts/core/libraries/RulesLib.sol";
+import {RuleChange, RuleProcessingParams, Rule, KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {RuleBasedPrimitive} from "lens-modules/contracts/core/base/RuleBasedPrimitive.sol";
+import {CallLib} from "lens-modules/contracts/core/libraries/CallLib.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 abstract contract RuleBasedGroup is IGroup, RuleBasedPrimitive {
     using RulesLib for RulesStorage;
@@ -106,11 +106,6 @@ abstract contract RuleBasedGroup is IGroup, RuleBasedPrimitive {
         bytes4 selector
     ) internal override {}
 
-    function _amountOfRules(bytes4 ruleSelector) internal view returns (uint256) {
-        return $groupRulesStorage()._getRulesArray(ruleSelector, false).length
-            + $groupRulesStorage()._getRulesArray(ruleSelector, true).length;
-    }
-
     function getGroupRules(bytes4 ruleSelector, bool isRequired)
         external
         view
@@ -145,7 +140,7 @@ abstract contract RuleBasedGroup is IGroup, RuleBasedPrimitive {
     function _processMemberRemoval(
         address originalMsgSender,
         address account,
-        KeyValue[] calldata primitiveCustomParams,
+        KeyValue[] memory primitiveCustomParams,
         RuleProcessingParams[] calldata ruleProcessingParams
     ) internal {
         _processGroupRule(
@@ -182,7 +177,7 @@ abstract contract RuleBasedGroup is IGroup, RuleBasedPrimitive {
     function _processMemberAddition(
         address originalMsgSender,
         address account,
-        KeyValue[] calldata primitiveCustomParams,
+        KeyValue[] memory primitiveCustomParams,
         RuleProcessingParams[] calldata ruleProcessingParams
     ) internal {
         _processGroupRule(

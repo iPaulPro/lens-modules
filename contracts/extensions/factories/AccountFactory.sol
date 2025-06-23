@@ -2,10 +2,10 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {Account, AccountManagerPermissions} from "../account/Account.sol";
-import {KeyValue, SourceStamp} from "../../core/types/Types.sol";
-import {BeaconProxy} from "../../core/upgradeability/BeaconProxy.sol";
-import {ProxyAdmin} from "../../core/upgradeability/ProxyAdmin.sol";
+import {Account, AccountManagerPermissions} from "lens-modules/contracts/extensions/account/Account.sol";
+import {KeyValue, SourceStamp} from "lens-modules/contracts/core/types/Types.sol";
+import {BeaconProxy} from "lens-modules/contracts/core/upgradeability/BeaconProxy.sol";
+import {ProxyAdmin} from "lens-modules/contracts/core/upgradeability/ProxyAdmin.sol";
 
 contract AccountFactory {
     event Lens_Account_Created(

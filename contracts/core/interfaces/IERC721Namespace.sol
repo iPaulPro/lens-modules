@@ -3,7 +3,7 @@
 pragma solidity ^0.8.26;
 
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import {INamespace} from "./INamespace.sol";
+import {INamespace} from "lens-modules/contracts/core/interfaces/INamespace.sol";
 
 interface IERC721Namespace is INamespace, IERC721 {
     event Lens_Username_Transfer(address indexed from, address indexed to, uint256 indexed tokenId);

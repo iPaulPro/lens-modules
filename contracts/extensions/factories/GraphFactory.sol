@@ -2,17 +2,19 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IAccessControl} from "../../core/interfaces/IAccessControl.sol";
-import {Graph} from "../../core/primitives/graph/Graph.sol";
-import {RuleChange, KeyValue} from "../../core/types/Types.sol";
-import {BeaconProxy} from "../../core/upgradeability/BeaconProxy.sol";
-import {ProxyAdmin} from "../../core/upgradeability/ProxyAdmin.sol";
-import {PrimitiveFactory} from "./PrimitiveFactory.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
+import {Graph} from "lens-modules/contracts/core/primitives/graph/Graph.sol";
+import {RuleChange, KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {BeaconProxy} from "lens-modules/contracts/core/upgradeability/BeaconProxy.sol";
+import {ProxyAdmin} from "lens-modules/contracts/core/upgradeability/ProxyAdmin.sol";
+import {PrimitiveFactory} from "lens-modules/contracts/extensions/factories/PrimitiveFactory.sol";
 
 contract GraphFactory is PrimitiveFactory {
     event Lens_GraphFactory_Deployment(address indexed graph, string metadataURI);
 
-    constructor(address primitiveBeacon, address proxyAdminLock) PrimitiveFactory(primitiveBeacon, proxyAdminLock) {}
+    constructor(address primitiveBeacon, address proxyAdminLock, address lensFactory)
+        PrimitiveFactory(primitiveBeacon, proxyAdminLock, lensFactory)
+    {}
 
     function deployGraph(
         string memory metadataURI,
@@ -20,7 +22,7 @@ contract GraphFactory is PrimitiveFactory {
         address proxyAdminOwner,
         RuleChange[] calldata ruleChanges,
         KeyValue[] calldata extraData
-    ) external returns (address) {
+    ) external onlyLensFactory returns (address) {
         address proxyAdmin = address(new ProxyAdmin(proxyAdminOwner, PROXY_ADMIN_LOCK));
         Graph graph = Graph(address(new BeaconProxy(proxyAdmin, PRIMITIVE_BEACON)));
         graph.initialize(metadataURI, TEMPORARY_ACCESS_CONTROL);

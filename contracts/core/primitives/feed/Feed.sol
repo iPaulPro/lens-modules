@@ -2,25 +2,27 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IFeed, Post, EditPostParams, CreatePostParams} from "../../interfaces/IFeed.sol";
-import {FeedCore as Core} from "./FeedCore.sol";
-import {IAccessControl} from "../../interfaces/IAccessControl.sol";
-import {RuleBasedFeed} from "./RuleBasedFeed.sol";
-import {AccessControlled} from "../../access/AccessControlled.sol";
-import {ExtraStorageBased} from "../../base/ExtraStorageBased.sol";
-import {RuleChange, RuleProcessingParams, KeyValue} from "../../types/Types.sol";
-import {Events} from "../../types/Events.sol";
-import {SourceStampBased} from "../../base/SourceStampBased.sol";
-import {MetadataBased} from "../../base/MetadataBased.sol";
-import {Initializable} from "../../upgradeability/Initializable.sol";
-import {Errors} from "../../types/Errors.sol";
+import {IFeed, Post, EditPostParams, CreatePostParams} from "lens-modules/contracts/core/interfaces/IFeed.sol";
+import {FeedCore as Core} from "lens-modules/contracts/core/primitives/feed/FeedCore.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
+import {RuleBasedFeed} from "lens-modules/contracts/core/primitives/feed/RuleBasedFeed.sol";
+import {AccessControlled} from "lens-modules/contracts/core/access/AccessControlled.sol";
+import {ExtraDataBased} from "lens-modules/contracts/core/base/ExtraDataBased.sol";
+import {EntityExtraDataBased} from "lens-modules/contracts/core/base/EntityExtraDataBased.sol";
+import {RuleChange, RuleProcessingParams, KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {Events} from "lens-modules/contracts/core/types/Events.sol";
+import {SourceStampBased} from "lens-modules/contracts/core/base/SourceStampBased.sol";
+import {MetadataBased} from "lens-modules/contracts/core/base/MetadataBased.sol";
+import {Initializable} from "lens-modules/contracts/core/upgradeability/Initializable.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 contract Feed is
     IFeed,
     Initializable,
     RuleBasedFeed,
     AccessControlled,
-    ExtraStorageBased,
+    ExtraDataBased,
+    EntityExtraDataBased,
     SourceStampBased,
     MetadataBased
 {
@@ -82,8 +84,35 @@ contract Feed is
         virtual
         override
     {
+        require(Core._postExists(entityId), Errors.DoesNotExist());
         require(msg.sender == Core.$storage().posts[entityId].author, Errors.InvalidMsgSender());
         require(entityId == Core.$storage().posts[entityId].rootPostId, Errors.CannotHaveRules());
+    }
+
+    function _emitExtraDataAddedEvent(KeyValue calldata extraDataAdded) internal override {
+        emit Lens_Feed_ExtraDataAdded(extraDataAdded.key, extraDataAdded.value, extraDataAdded.value);
+    }
+
+    function _emitExtraDataUpdatedEvent(KeyValue calldata extraDataUpdated) internal override {
+        emit Lens_Feed_ExtraDataUpdated(extraDataUpdated.key, extraDataUpdated.value, extraDataUpdated.value);
+    }
+
+    function _emitExtraDataRemovedEvent(KeyValue calldata extraDataRemoved) internal override {
+        emit Lens_Feed_ExtraDataRemoved(extraDataRemoved.key);
+    }
+
+    function _emitEntityExtraDataAddedEvent(uint256 postId, KeyValue memory extraDataAdded) internal override {
+        emit Lens_Feed_Post_ExtraDataAdded(postId, extraDataAdded.key, extraDataAdded.value, extraDataAdded.value);
+    }
+
+    function _emitEntityExtraDataUpdatedEvent(uint256 postId, KeyValue memory extraDataUpdated) internal override {
+        emit Lens_Feed_Post_ExtraDataUpdated(
+            postId, extraDataUpdated.key, extraDataUpdated.value, extraDataUpdated.value
+        );
+    }
+
+    function _emitEntityExtraDataRemovedEvent(uint256 postId, KeyValue memory extraDataRemoved) internal override {
+        emit Lens_Feed_Post_ExtraDataRemoved(postId, extraDataRemoved.key);
     }
 
     // Public user functions
@@ -99,20 +128,24 @@ contract Feed is
         (uint256 postId, uint256 localSequentialId, uint256 rootPostId) = Core._createPost(postParams);
         _validateExpectedPostIdIfPresent(customParams, postId);
         address source = _processSourceStamp(postId, customParams);
-        _setEntityExtraStorage(postId, KeyValue(DATA__LAST_UPDATED_SOURCE, abi.encode(source)));
+        _storeSource(DATA__LAST_UPDATED_SOURCE, postId, source);
         _processPostCreationOnFeed(postId, postParams, customParams, feedRulesParams);
         // Process rules of the Quote (if quoting)
         if (postParams.quotedPostId != 0) {
+            // Existence of the quotedPost post was checked in the Core
             // Just a thought: Maybe quotes shouldn't be limited by rules... Like quotations in real life.
             uint256 rootOfQuotedPost = Core.$storage().posts[postParams.quotedPostId].rootPostId;
-            if (rootOfQuotedPost != rootPostId) {
+            if (rootOfQuotedPost != rootPostId && Core._postExists(rootOfQuotedPost)) {
                 _processPostCreationOnRootPost(rootOfQuotedPost, postId, postParams, customParams, quotedPostRulesParams);
             }
         }
         if (postId != rootPostId) {
+            // Existence of the Replied/Reposted Post is checked in the Core
             require(postParams.ruleChanges.length == 0, Errors.CannotHaveRules());
-            // This covers the Reply or Repost cases
-            _processPostCreationOnRootPost(rootPostId, postId, postParams, customParams, rootPostRulesParams);
+            if (Core._postExists(rootPostId)) {
+                // This covers the Reply or Repost cases
+                _processPostCreationOnRootPost(rootPostId, postId, postParams, customParams, rootPostRulesParams);
+            }
         } else {
             _addPostRulesAtCreation(postId, postParams, feedRulesParams);
         }
@@ -128,12 +161,7 @@ contract Feed is
             quotedPostRulesParams,
             source
         );
-        for (uint256 i = 0; i < postParams.extraData.length; i++) {
-            _setEntityExtraStorage_Account(postId, postParams.extraData[i]);
-            emit Lens_Feed_Post_ExtraDataAdded(
-                postId, postParams.extraData[i].key, postParams.extraData[i].value, postParams.extraData[i].value
-            );
-        }
+        _setEntityExtraData(postId, postParams.extraData);
         return postId;
     }
 
@@ -150,44 +178,26 @@ contract Feed is
         // You can have this if you want to allow moderator editing:
         // require(msg.sender == author || _hasAccess(msg.sender, EDIT_POST_PID));
         require(msg.sender == author, Errors.InvalidMsgSender());
-
         Core._editPost(postId, postParams);
-
-        bool[] memory wereExtraDataValuesSet = new bool[](postParams.extraData.length);
-        for (uint256 i = 0; i < postParams.extraData.length; i++) {
-            wereExtraDataValuesSet[i] = _setEntityExtraStorage_Account(postId, postParams.extraData[i]);
-        }
-
+        _setEntityExtraData(postId, postParams.extraData);
         _processPostEditingOnFeed(postId, postParams, customParams, feedRulesParams);
         uint256 quotedPostId = Core.$storage().posts[postId].quotedPostId;
         if (quotedPostId != 0) {
             uint256 rootOfQuotedPost = Core.$storage().posts[quotedPostId].rootPostId;
-            _processPostEditingOnRootPost(rootOfQuotedPost, postId, postParams, customParams, quotedPostRulesParams);
+            // Skip the Root rules processing if the Root post was deleted
+            if (Core._postExists(rootOfQuotedPost)) {
+                _processPostEditingOnRootPost(rootOfQuotedPost, postId, postParams, customParams, quotedPostRulesParams);
+            }
         }
         uint256 rootPostId = Core.$storage().posts[postId].rootPostId;
-        if (postId != rootPostId) {
+        // Skip the Root rules processing if the Root post was deleted
+        if (postId != rootPostId && Core._postExists(rootPostId)) {
             _processPostEditingOnRootPost(rootPostId, postId, postParams, customParams, rootPostRulesParams);
         }
-        address source = _processSourceStamp({
-            key: DATA__LAST_UPDATED_SOURCE,
-            entityId: postId,
-            customParams: customParams,
-            storeSource: true
-        });
+        address source = _processSourceStamp(DATA__LAST_UPDATED_SOURCE, postId, customParams);
         emit Lens_Feed_PostEdited(
             postId, author, postParams, customParams, feedRulesParams, rootPostRulesParams, quotedPostRulesParams, source
         );
-        for (uint256 i = 0; i < postParams.extraData.length; i++) {
-            if (wereExtraDataValuesSet[i]) {
-                emit Lens_Feed_Post_ExtraDataUpdated(
-                    postId, postParams.extraData[i].key, postParams.extraData[i].value, postParams.extraData[i].value
-                );
-            } else {
-                emit Lens_Feed_Post_ExtraDataAdded(
-                    postId, postParams.extraData[i].key, postParams.extraData[i].value, postParams.extraData[i].value
-                );
-            }
-        }
     }
 
     function deletePost(
@@ -200,33 +210,27 @@ contract Feed is
         require(msg.sender == author || _hasAccess(msg.sender, PID__REMOVE_POST), Errors.InvalidMsgSender());
         Core._removePost(postId);
         _processPostDeletion(postId, customParams, feedRulesParams);
-        address source = _processSourceStamp(postId, customParams);
+        address source = _processSourceStamp(DATA__LAST_UPDATED_SOURCE, postId, customParams);
         emit Lens_Feed_PostDeleted(postId, author, customParams, source);
     }
 
     function setExtraData(KeyValue[] calldata extraDataToSet) external override {
         _requireAccess(msg.sender, PID__SET_EXTRA_DATA);
-        for (uint256 i = 0; i < extraDataToSet.length; i++) {
-            bool hadAValueSetBefore = _setExtraStorage_Self(extraDataToSet[i]);
-            bool isNewValueEmpty = extraDataToSet[i].value.length == 0;
-            if (hadAValueSetBefore) {
-                if (isNewValueEmpty) {
-                    emit Lens_Feed_ExtraDataRemoved(extraDataToSet[i].key);
-                } else {
-                    emit Lens_Feed_ExtraDataUpdated(
-                        extraDataToSet[i].key, extraDataToSet[i].value, extraDataToSet[i].value
-                    );
-                }
-            } else if (!isNewValueEmpty) {
-                emit Lens_Feed_ExtraDataAdded(extraDataToSet[i].key, extraDataToSet[i].value, extraDataToSet[i].value);
-            }
-        }
+        _setExtraData(extraDataToSet);
     }
 
     // Getters
 
     function getPost(uint256 postId) external view override returns (Post memory) {
         require(Core._postExists(postId), Errors.DoesNotExist());
+        return _getPostUnchecked(postId);
+    }
+
+    function getPostUnchecked(uint256 postId) external view override returns (Post memory) {
+        return _getPostUnchecked(postId);
+    }
+
+    function _getPostUnchecked(uint256 postId) internal view returns (Post memory) {
         return Post({
             author: Core.$storage().posts[postId].author,
             authorPostSequentialId: Core.$storage().posts[postId].authorPostSequentialId,
@@ -239,7 +243,8 @@ contract Feed is
             creationTimestamp: Core.$storage().posts[postId].creationTimestamp,
             creationSource: _getSource(postId),
             lastUpdatedTimestamp: Core.$storage().posts[postId].lastUpdatedTimestamp,
-            lastUpdateSource: _getSource(DATA__LAST_UPDATED_SOURCE, postId)
+            lastUpdateSource: _getSource(DATA__LAST_UPDATED_SOURCE, postId),
+            isDeleted: Core.$storage().posts[postId].isDeleted
         });
     }
 
@@ -267,7 +272,7 @@ contract Feed is
     }
 
     function getExtraData(bytes32 key) external view override returns (bytes memory) {
-        return _getExtraStorage_Self(key);
+        return _getExtraData(key);
     }
 
     function getPostSequentialId(uint256 postId) external view override returns (uint256) {

@@ -2,9 +2,12 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IVersionedBeacon} from "../interfaces/IVersionedBeacon.sol";
-import {Errors} from "../types/Errors.sol";
+import {IVersionedBeacon} from "lens-modules/contracts/core/interfaces/IVersionedBeacon.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
+/**
+ * BeaconProxy implementation used by Lens canonical Namespace, Feed, and Graph, before changes to BeaconProxy were made.
+ */
 contract BeaconProxy {
     event Upgraded(address indexed implementation);
     event BeaconUpgraded(address indexed beacon);

@@ -2,9 +2,9 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {RuleProcessingParams, KeyValue, RuleChange, Rule} from "../types/Types.sol";
-import {IMetadataBased} from "./IMetadataBased.sol";
-import {IAccessControl} from "./IAccessControl.sol";
+import {RuleProcessingParams, KeyValue, RuleChange, Rule} from "lens-modules/contracts/core/types/Types.sol";
+import {IMetadataBased} from "lens-modules/contracts/core/interfaces/IMetadataBased.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
 
 struct Follow {
     uint256 id;
@@ -114,4 +114,6 @@ interface IGraph is IMetadataBased {
         returns (Rule[] memory);
 
     function getExtraData(bytes32 key) external view returns (bytes memory);
+
+    function getFollowSource(address followedAccount, uint256 followId) external view returns (address);
 }

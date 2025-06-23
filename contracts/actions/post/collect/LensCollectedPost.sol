@@ -2,11 +2,11 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import "../../../core/base/LensERC721.sol";
-import {IERC7572} from "./IERC7572.sol";
-import {IFeed} from "../../../core/interfaces/IFeed.sol";
-import {ITokenURIProvider} from "../../../core/interfaces/ITokenURIProvider.sol";
-import {Errors} from "../../../core/types/Errors.sol";
+import "lens-modules/contracts/core/base/LensERC721.sol";
+import {IERC7572} from "lens-modules/contracts/actions/post/collect/IERC7572.sol";
+import {IFeed} from "lens-modules/contracts/core/interfaces/IFeed.sol";
+import {ITokenURIProvider} from "lens-modules/contracts/core/interfaces/ITokenURIProvider.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 /**
  * @notice A contract that represents a Lens Collected Post.
@@ -21,6 +21,8 @@ import {Errors} from "../../../core/types/Errors.sol";
  * Collect creation.
  */
 contract LensCollectedPost is LensERC721, IERC7572 {
+    event Lens_LensCollectedPost_Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+
     string internal _contentURISnapshot;
     string internal _contractURI;
     address internal immutable _feed;
@@ -64,6 +66,10 @@ contract LensCollectedPost is LensERC721, IERC7572 {
     }
 
     // Internal
+
+    function _afterTokenTransfer(address from, address to, uint256 tokenId) internal virtual override {
+        emit Lens_LensCollectedPost_Transfer(from, to, tokenId);
+    }
 
     // Disabling integrated LensERC721 tokenURIProvider
     function _beforeTokenURIProviderSet(ITokenURIProvider /* tokenURIProvider */ ) internal pure override {

@@ -2,8 +2,8 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {CreatePostParams, EditPostParams} from "./IFeed.sol";
-import {KeyValue} from "../types/Types.sol";
+import {CreatePostParams, EditPostParams} from "lens-modules/contracts/core/interfaces/IFeed.sol";
+import {KeyValue} from "lens-modules/contracts/core/types/Types.sol";
 
 interface IPostRule {
     function configure(bytes32 configSalt, uint256 postId, KeyValue[] calldata ruleParams) external;

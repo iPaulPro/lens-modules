@@ -2,14 +2,19 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {Ownable} from "../../../core/access/Ownable.sol";
-import {MetadataBased} from "../../../core/base/MetadataBased.sol";
-import {BaseAccountAction} from "./BaseAccountAction.sol";
+import {Ownable} from "lens-modules/contracts/core/access/Ownable.sol";
+import {MetadataBased} from "lens-modules/contracts/core/base/MetadataBased.sol";
+import {BaseAccountAction} from "lens-modules/contracts/actions/account/base/BaseAccountAction.sol";
 
 abstract contract OwnableMetadataBasedAccountAction is BaseAccountAction, Ownable, MetadataBased {
     event Lens_AccountAction_MetadataURISet(string metadataURI);
 
     constructor(address actionHub, address owner, string memory metadataURI) BaseAccountAction(actionHub) {
+        _transferOwnership(owner);
+        _setMetadataURI(metadataURI);
+    }
+
+    function _initialize(address owner, string memory metadataURI) internal {
         _transferOwnership(owner);
         _setMetadataURI(metadataURI);
     }

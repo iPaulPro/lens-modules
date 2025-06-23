@@ -2,13 +2,13 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {INamespaceRule} from "../../interfaces/INamespaceRule.sol";
-import {RulesStorage, RulesLib} from "../../libraries/RulesLib.sol";
-import {RuleChange, RuleProcessingParams, Rule, KeyValue} from "../../types/Types.sol";
-import {INamespace} from "../../interfaces/INamespace.sol";
-import {RuleBasedPrimitive} from "../../base/RuleBasedPrimitive.sol";
-import {CallLib} from "../../libraries/CallLib.sol";
-import {Errors} from "../../types/Errors.sol";
+import {INamespaceRule} from "lens-modules/contracts/core/interfaces/INamespaceRule.sol";
+import {RulesStorage, RulesLib} from "lens-modules/contracts/core/libraries/RulesLib.sol";
+import {RuleChange, RuleProcessingParams, Rule, KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {INamespace} from "lens-modules/contracts/core/interfaces/INamespace.sol";
+import {RuleBasedPrimitive} from "lens-modules/contracts/core/base/RuleBasedPrimitive.sol";
+import {CallLib} from "lens-modules/contracts/core/libraries/CallLib.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 abstract contract RuleBasedNamespace is INamespace, RuleBasedPrimitive {
     using RulesLib for RulesStorage;
@@ -105,11 +105,6 @@ abstract contract RuleBasedNamespace is INamespace, RuleBasedPrimitive {
         bool isRequired,
         bytes4 selector
     ) internal override {}
-
-    function _amountOfRules(bytes4 ruleSelector) internal view returns (uint256) {
-        return $namespaceRulesStorage()._getRulesArray(ruleSelector, false).length
-            + $namespaceRulesStorage()._getRulesArray(ruleSelector, true).length;
-    }
 
     function getNamespaceRules(bytes4 ruleSelector, bool isRequired)
         external

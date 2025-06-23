@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import {IMetadataBased} from "../interfaces/IMetadataBased.sol";
-import {Errors} from "../types/Errors.sol";
+import {IMetadataBased} from "lens-modules/contracts/core/interfaces/IMetadataBased.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 abstract contract MetadataBased is IMetadataBased {
     // source = address(0)          =>  Global MetadataURI
@@ -22,6 +22,7 @@ abstract contract MetadataBased is IMetadataBased {
 
     function setMetadataURI(string memory metadataURI) external override {
         _beforeMetadataURIUpdate(metadataURI);
+        // solc-ignore-next-line unreachable
         _setMetadataURI(metadataURI);
     }
 

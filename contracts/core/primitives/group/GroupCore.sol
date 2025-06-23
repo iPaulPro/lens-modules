@@ -2,8 +2,8 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {Membership} from "../../interfaces/IGroup.sol";
-import {Errors} from "../../types/Errors.sol";
+import {Membership} from "lens-modules/contracts/core/interfaces/IGroup.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 library GroupCore {
     // Storage

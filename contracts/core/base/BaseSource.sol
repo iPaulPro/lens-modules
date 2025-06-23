@@ -2,9 +2,9 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {ISource} from "../interfaces/ISource.sol";
-import {SourceStamp} from "../types/Types.sol";
-import {Errors} from "../types/Errors.sol";
+import {ISource} from "lens-modules/contracts/core/interfaces/ISource.sol";
+import {SourceStamp} from "lens-modules/contracts/core/types/Types.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 abstract contract BaseSource is ISource {
     event Lens_Source_NonceUsed(uint256 nonce);

@@ -2,9 +2,9 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {KeyValue, Rule, RuleProcessingParams, RuleChange} from "../types/Types.sol";
-import {IMetadataBased} from "./IMetadataBased.sol";
-import {IAccessControl} from "./IAccessControl.sol";
+import {KeyValue, Rule, RuleProcessingParams, RuleChange} from "lens-modules/contracts/core/types/Types.sol";
+import {IMetadataBased} from "lens-modules/contracts/core/interfaces/IMetadataBased.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
 
 struct EditPostParams {
     string contentURI;
@@ -35,6 +35,7 @@ struct Post {
     address creationSource;
     uint80 lastUpdatedTimestamp;
     address lastUpdateSource;
+    bool isDeleted;
 }
 
 interface IFeed is IMetadataBased {
@@ -156,6 +157,8 @@ interface IFeed is IMetadataBased {
     // Getters
 
     function getPost(uint256 postId) external view returns (Post memory);
+
+    function getPostUnchecked(uint256 postId) external view returns (Post memory);
 
     function postExists(uint256 postId) external view returns (bool);
 

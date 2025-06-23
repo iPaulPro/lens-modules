@@ -2,10 +2,10 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {KeyValue, RuleChange, RuleProcessingParams, Rule} from "../types/Types.sol";
-import {IMetadataBased} from "./IMetadataBased.sol";
-import {IAccessControl} from "./IAccessControl.sol";
-import {ITokenURIProvider} from "./ITokenURIProvider.sol";
+import {KeyValue, RuleChange, RuleProcessingParams, Rule} from "lens-modules/contracts/core/types/Types.sol";
+import {IMetadataBased} from "lens-modules/contracts/core/interfaces/IMetadataBased.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
+import {ITokenURIProvider} from "lens-modules/contracts/core/interfaces/ITokenURIProvider.sol";
 
 interface INamespace is IMetadataBased {
     event Lens_Namespace_RuleConfigured(address indexed rule, bytes32 indexed configSalt, KeyValue[] configParams);
@@ -56,9 +56,13 @@ interface INamespace is IMetadataBased {
     event Lens_Namespace_ExtraDataAdded(bytes32 indexed key, bytes value, bytes indexed valueIndexed);
     event Lens_Namespace_ExtraDataUpdated(bytes32 indexed key, bytes value, bytes indexed valueIndexed);
     event Lens_Namespace_ExtraDataRemoved(bytes32 indexed key);
-    event Lens_Username_ExtraDataAdded(bytes32 indexed key, bytes value, bytes indexed valueIndexed);
-    event Lens_Username_ExtraDataUpdated(bytes32 indexed key, bytes value, bytes indexed valueIndexed);
-    event Lens_Username_ExtraDataRemoved(bytes32 indexed key);
+    event Lens_Username_ExtraDataAdded(
+        uint256 indexed usernameId, bytes32 indexed key, bytes value, bytes indexed valueIndexed
+    );
+    event Lens_Username_ExtraDataUpdated(
+        uint256 indexed usernameId, bytes32 indexed key, bytes value, bytes indexed valueIndexed
+    );
+    event Lens_Username_ExtraDataRemoved(uint256 indexed usernameId, bytes32 indexed key);
 
     event Lens_Namespace_MetadataURISet(string metadataURI);
 
@@ -122,4 +126,8 @@ interface INamespace is IMetadataBased {
     function getUsernameExtraData(string calldata username, bytes32 key) external view returns (bytes memory);
 
     function exists(string calldata username) external view returns (bool);
+
+    function getUsernameCreationSource(string calldata username) external view returns (address);
+
+    function getUsernameAssignmentSource(string calldata username) external view returns (address);
 }

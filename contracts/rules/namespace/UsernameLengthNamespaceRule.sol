@@ -2,15 +2,16 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IAccessControl} from "../../core/interfaces/IAccessControl.sol";
-import {INamespaceRule} from "../../core/interfaces/INamespaceRule.sol";
-import {AccessControlLib} from "../../core/libraries/AccessControlLib.sol";
-import {Events} from "../../core/types/Events.sol";
-import {KeyValue} from "../../core/types/Types.sol";
-import {OwnableMetadataBasedRule} from "../base/OwnableMetadataBasedRule.sol";
-import {Errors} from "../../core/types/Errors.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
+import {INamespaceRule} from "lens-modules/contracts/core/interfaces/INamespaceRule.sol";
+import {AccessControlLib} from "lens-modules/contracts/core/libraries/AccessControlLib.sol";
+import {Events} from "lens-modules/contracts/core/types/Events.sol";
+import {KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {OwnableMetadataBasedRule} from "lens-modules/contracts/rules/base/OwnableMetadataBasedRule.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
+import {Initializable} from "lens-modules/contracts/core/upgradeability/Initializable.sol";
 
-contract UsernameLengthNamespaceRule is INamespaceRule, OwnableMetadataBasedRule {
+contract UsernameLengthNamespaceRule is OwnableMetadataBasedRule, Initializable, INamespaceRule {
     using AccessControlLib for IAccessControl;
     using AccessControlLib for address;
 
@@ -28,6 +29,10 @@ contract UsernameLengthNamespaceRule is INamespaceRule, OwnableMetadataBasedRule
     /// @custom:keccak lens.param.maxLength
     bytes32 constant PARAM__MAX_LENGTH = 0x1ca8667b94b405cf7da43e835d971ef185da6461852b8b81579a58637515aa69;
 
+    /// @custom:keccak lens.storage.UsernameLengthNamespaceRule
+    bytes32 constant STORAGE__USERNAME_LENGTH_NAMESPACE_RULE =
+        0x08a7202baa9f254e5fee08987a4c8a3a9177d81af0c772b263c686bccb0f6ac8;
+
     struct LengthRestrictions {
         uint8 min;
         uint8 max;
@@ -38,15 +43,28 @@ contract UsernameLengthNamespaceRule is INamespaceRule, OwnableMetadataBasedRule
         LengthRestrictions lengthRestrictions;
     }
 
-    mapping(address => mapping(bytes32 => Configuration)) internal _configuration;
+    struct Storage {
+        mapping(address namespace => mapping(bytes32 configSalt => Configuration config)) configuration;
+    }
 
-    constructor(address owner, string memory metadataURI) OwnableMetadataBasedRule(owner, metadataURI) {
+    function $storage() private pure returns (Storage storage _storage) {
+        assembly {
+            _storage.slot := STORAGE__USERNAME_LENGTH_NAMESPACE_RULE
+        }
+    }
+
+    constructor() OwnableMetadataBasedRule(address(0), "") {
+        _disableInitializers();
+    }
+
+    function initialize(address owner, string memory metadataURI) external initializer {
         emit Events.Lens_PermissionId_Available(
             PID__SKIP_MIN_LENGTH_RESTRICTION, "lens.permission.SkipMinLengthRestriction"
         );
         emit Events.Lens_PermissionId_Available(
             PID__SKIP_MAX_LENGTH_RESTRICTION, "lens.permission.SkipMaxLengthRestriction"
         );
+        OwnableMetadataBasedRule._initialize(owner, metadataURI);
     }
 
     function configure(bytes32 configSalt, KeyValue[] calldata ruleParams) external override {
@@ -57,7 +75,7 @@ contract UsernameLengthNamespaceRule is INamespaceRule, OwnableMetadataBasedRule
                 || configuration.lengthRestrictions.min <= configuration.lengthRestrictions.max,
             Errors.InvalidParameter()
         ); // Min length cannot be greater than max length
-        _configuration[msg.sender][configSalt] = configuration;
+        $storage().configuration[msg.sender][configSalt] = configuration;
     }
 
     function processCreation(
@@ -68,7 +86,7 @@ contract UsernameLengthNamespaceRule is INamespaceRule, OwnableMetadataBasedRule
         KeyValue[] calldata, /* primitiveParams */
         KeyValue[] calldata /* ruleParams */
     ) external view override {
-        Configuration memory configuration = _configuration[msg.sender][configSalt];
+        Configuration memory configuration = $storage().configuration[msg.sender][configSalt];
         uint256 usernameLength = bytes(username).length;
         if (
             configuration.lengthRestrictions.min != 0

@@ -2,10 +2,10 @@
 // Copyright (C) 2024 Lens Labs. All Rights Reserved.
 pragma solidity ^0.8.26;
 
-import {IMetadataBased} from "../../../core/interfaces/IMetadataBased.sol";
-import {KeyValue} from "../../../core/types/Types.sol";
-import {IAccessControl} from "../../../core/interfaces/IAccessControl.sol";
-import {AppInitialProperties} from "./App.sol";
+import {IMetadataBased} from "lens-modules/contracts/core/interfaces/IMetadataBased.sol";
+import {KeyValue} from "lens-modules/contracts/core/types/Types.sol";
+import {IAccessControl} from "lens-modules/contracts/core/interfaces/IAccessControl.sol";
+import {AppInitialProperties} from "lens-modules/contracts/extensions/primitives/app/App.sol";
 
 interface IApp is IMetadataBased {
     // Graph
