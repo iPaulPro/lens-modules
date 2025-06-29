@@ -18,11 +18,14 @@ library Errors {
     error DoesNotExist();
     error DuplicatedValue();
     error Expired();
+    error FailedToTransferNative();
     error Immutable();
+    error InsufficientAllowance();
     error InvalidConfigSalt();
     error InvalidMsgSender();
     error InvalidParameter();
     error InvalidSignature();
+    error InvalidSourceStampOriginalMsgSender();
     error LimitReached();
     error Locked();
     error NonceUsed();
@@ -30,6 +33,7 @@ library Errors {
     error NotAllowed();
     error NotAMember();
     error NotEnough();
+    error NotEnoughBalance();
     error NotFollowing();
     error NotFound();
     error NotImplemented();

@@ -5,9 +5,10 @@ pragma solidity ^0.8.26;
 import {ILensFees, LensFeesData} from "lens-modules/contracts/extensions/fees/LensFees.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {CONTRACT__LENS_FEES, BPS_MAX} from "lens-modules/contracts/core/types/Constants.sol";
+import {CONTRACT__LENS_FEES, NATIVE_TOKEN, BPS_MAX} from "lens-modules/contracts/core/types/Constants.sol";
 import {RecipientData} from "lens-modules/contracts/core/types/Types.sol";
 import {LENS_CREATE_2_ADDRESS, ILensCreate2} from "lens-modules/contracts/core/upgradeability/LensCreate2.sol";
+import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 
 abstract contract LensPaymentHandler {
     using SafeERC20 for IERC20;
@@ -48,7 +49,7 @@ abstract contract LensPaymentHandler {
         LensFeesData memory lensFees = ILensFees(LENS_FEES).getLensFeesData();
         uint256 amountForTreasury = (amount * lensFees.treasuryFeeBps) / BPS_MAX;
         if (lensFees.treasuryAddress != address(0) && amountForTreasury > 0) {
-            IERC20(token).safeTransferFrom(payer, lensFees.treasuryAddress, amountForTreasury);
+            _sendToken(token, payer, lensFees.treasuryAddress, amountForTreasury);
         }
         return amount - amountForTreasury;
     }
@@ -65,20 +66,23 @@ abstract contract LensPaymentHandler {
             return amount;
         }
         uint16 accumulatedSplitBps;
+        uint256 accumulatedAmountForReferrals;
         for (uint256 i = 0; i < referrals.length; i++) {
             uint256 amountForReferral = (totalAmountForReferrals * referrals[i].splitBps) / BPS_MAX;
             accumulatedSplitBps += referrals[i].splitBps;
+            accumulatedAmountForReferrals += amountForReferral;
             if (amountForReferral > 0) {
-                IERC20(token).safeTransferFrom(payer, referrals[i].recipient, amountForReferral);
+                _sendToken(token, payer, referrals[i].recipient, amountForReferral);
             }
         }
         require(accumulatedSplitBps <= BPS_MAX);
-        return amount - totalAmountForReferrals;
+        require(accumulatedAmountForReferrals <= totalAmountForReferrals);
+        return amount - accumulatedAmountForReferrals;
     }
 
     function _processRecipient(address payer, address token, uint256 amount, address recipient) internal virtual {
         if (amount > 0) {
-            IERC20(token).safeTransferFrom(payer, recipient, amount);
+            _sendToken(token, payer, recipient, amount);
         }
     }
 
@@ -89,8 +93,24 @@ abstract contract LensPaymentHandler {
         for (uint256 i = 0; i < recipients.length; i++) {
             uint256 amountForRecipient = (amount * recipients[i].splitBps) / BPS_MAX;
             if (amountForRecipient > 0) {
-                IERC20(token).safeTransferFrom(payer, recipients[i].recipient, amountForRecipient);
+                _sendToken(token, payer, recipients[i].recipient, amountForRecipient);
             }
+        }
+    }
+
+    function _sendToken(address token, address payer, address recipient, uint256 amount) internal virtual {
+        if (token == NATIVE_TOKEN) {
+            (bool success,) = payable(recipient).call{value: amount}("");
+            require(success, Errors.FailedToTransferNative());
+        } else {
+            IERC20(token).safeTransferFrom(payer, recipient, amount);
+        }
+    }
+
+    function _validateToken(address token) internal view virtual {
+        if (token != NATIVE_TOKEN) {
+            // Expects token to support ERC-20 interface, we call balanceOf and expect it to not revert
+            IERC20(token).balanceOf(address(this));
         }
     }
 }

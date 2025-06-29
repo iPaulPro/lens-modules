@@ -6,7 +6,7 @@ export const lensDeployments = {
     },
     AccountImpl: {
       contractName: "Account",
-      address: "0xbC871ea4B54cDd1371a5D1a9a62044D89448d450",
+      address: "0xDe00E6589b839CA97935F182E7A863566B63aD2c",
     },
     FeedImpl: {
       contractName: "Feed",
@@ -22,7 +22,7 @@ export const lensDeployments = {
     },
     NamespaceImpl: {
       contractName: "Namespace",
-      address: "0x1Cfb6619bAEE3F5E47236E6B2e166B4B8ACf1e6f",
+      address: "0x3b670D827E2D9c665e8eB28e7758A24C2048FD91",
     },
     AccessControlFactory: {
       name: "AccessControlFactory",
@@ -134,16 +134,20 @@ export const lensDeployments = {
         },
       ],
     },
+    LensCreate2Impl: {
+      name: "LensCreate2Impl",
+      contractName: "LensCreate2",
+      address: "0x52AF9CF29976C310E3DE03C509E108edB6edb8c0",
+    },
     ActionHubImpl: {
-      name: "ActionHubImpl",
       contractName: "ActionHub",
-      address: "0xea21E3E70248e483c2F1ed2617E9d939eA8904bd",
+      address: "0x4596724eA4bA9Cac81CDcD0d1ca860a3a92248b5",
     },
     ActionHub: {
       name: "ActionHub",
       contractName: "ActionHub",
       address: "0xc6D57Ee750Ef2ee017a9E985A0C4198bEd16A802",
-      implementation: "0xea21E3E70248e483c2F1ed2617E9d939eA8904bd",
+      implementation: "0x4596724eA4bA9Cac81CDcD0d1ca860a3a92248b5",
     },
     LensFeesImpl: {
       name: "LensFeesImpl",
@@ -157,37 +161,34 @@ export const lensDeployments = {
       implementation: "0xE23292bEA6bb5874A839a7E1FfB7301657353187",
     },
     TippingAccountActionImpl: {
-      name: "TippingAccountActionImpl",
       contractName: "TippingAccountAction",
-      address: "0x9aE07367ae1f9697a0B217678B68E446DC188A8e",
+      address: "0xA2fc9eDa3F7f90DA9f7Fa40646d631986D5B3c74",
     },
     TippingAccountAction: {
       name: "TippingAccountAction",
       contractName: "TippingAccountAction",
       address: "0x20170F1e53851dF4d9ea236a28399493C5B152c0",
-      implementation: "0x9aE07367ae1f9697a0B217678B68E446DC188A8e",
+      implementation: "0xA2fc9eDa3F7f90DA9f7Fa40646d631986D5B3c74",
     },
     TippingPostActionImpl: {
-      name: "TippingPostActionImpl",
       contractName: "TippingPostAction",
-      address: "0xEF57280D1846ACCf55c056aC7F0902F5608FB790",
+      address: "0xc976641660A15cc66C26f10BD72e4F956EAAFD4f",
     },
     TippingPostAction: {
       name: "TippingPostAction",
       contractName: "TippingPostAction",
       address: "0x4984Ec4FfD17E64c8F91691D829BD5aeA287E47b",
-      implementation: "0xEF57280D1846ACCf55c056aC7F0902F5608FB790",
+      implementation: "0xc976641660A15cc66C26f10BD72e4F956EAAFD4f",
     },
     SimpleCollectActionImpl: {
-      name: "SimpleCollectActionImpl",
       contractName: "SimpleCollectAction",
-      address: "0x6f05AEffA4EE9Ba091EFe2D1751675f00B4FC174",
+      address: "0x1b5ADAc187Aa132D80B41E14B7C5b1F7AD794074",
     },
     SimpleCollectAction: {
       name: "SimpleCollectAction",
       contractName: "SimpleCollectAction",
       address: "0x1cEE1cd464C4E44e80aCDB0B0e33f88849070F6E",
-      implementation: "0x6f05AEffA4EE9Ba091EFe2D1751675f00B4FC174",
+      implementation: "0x1b5ADAc187Aa132D80B41E14B7C5b1F7AD794074",
     },
     AccountBlockingRuleImpl: {
       name: "AccountBlockingRuleImpl",
@@ -267,15 +268,14 @@ export const lensDeployments = {
       implementation: "0x1F8D82763f04e544278522b923eA924258dF9c2C",
     },
     SimplePaymentFeedRuleImpl: {
-      name: "SimplePaymentFeedRuleImpl",
       contractName: "SimplePaymentFeedRule",
-      address: "0xEbD685886F22857735CF90bB6C1F092006251f04",
+      address: "0xd9d34b26259ca6EE44bfd1040498095B86E8a796",
     },
     SimplePaymentFeedRule: {
       name: "SimplePaymentFeedRule",
       contractName: "SimplePaymentFeedRule",
       address: "0xD79dfb3f8290c0Da1899B91C3BbFE9aB56198004",
-      implementation: "0xEbD685886F22857735CF90bB6C1F092006251f04",
+      implementation: "0xd9d34b26259ca6EE44bfd1040498095B86E8a796",
     },
     TokenGatedFeedRuleImpl: {
       name: "TokenGatedFeedRuleImpl",
@@ -322,13 +322,13 @@ export const lensDeployments = {
     },
     SimplePaymentFollowRuleImpl: {
       contractName: "SimplePaymentFollowRule",
-      address: "0xc4A46F8707d9fD60f25021a11E5f76D6F7A5302e",
+      address: "0x8F7F84D11Ea2454914900ccDaf834912597e4e36",
     },
     SimplePaymentFollowRule: {
       name: "SimplePaymentFollowRule",
       contractName: "SimplePaymentFollowRule",
       address: "0x10E044f026bD51f855a10F2277e35Ed4c896db7e",
-      implementation: "0xc4A46F8707d9fD60f25021a11E5f76D6F7A5302e",
+      implementation: "0x8F7F84D11Ea2454914900ccDaf834912597e4e36",
     },
     TokenGatedFollowRuleImpl: {
       contractName: "TokenGatedFollowRule",
@@ -352,13 +352,13 @@ export const lensDeployments = {
     },
     SimplePaymentGroupRuleImpl: {
       contractName: "SimplePaymentGroupRule",
-      address: "0x40E3f3F611b9201EF6a31030CD347B72B2cc99E5",
+      address: "0x6B32CB6Bd0F966A3a1b8ea88819657aaC614a900",
     },
     SimplePaymentGroupRule: {
       name: "SimplePaymentGroupRule",
       contractName: "SimplePaymentGroupRule",
       address: "0x6d2251D69fba6D7e761c72d55Cf478d741cB4Ac1",
-      implementation: "0x40E3f3F611b9201EF6a31030CD347B72B2cc99E5",
+      implementation: "0x6B32CB6Bd0F966A3a1b8ea88819657aaC614a900",
     },
     TokenGatedGroupRuleImpl: {
       contractName: "TokenGatedGroupRule",
@@ -382,17 +382,26 @@ export const lensDeployments = {
     },
     UsernamePricePerLengthNamespaceRuleImpl: {
       contractName: "UsernamePricePerLengthNamespaceRule",
-      address: "0x515b14c04E0D97AD83CCc8de58448790E0fDDb1d",
+      address: "0xFDD1eD00eFAB19fD43217cD56217466720e33717",
     },
     UsernamePricePerLengthNamespaceRule: {
       name: "UsernamePricePerLengthNamespaceRule",
       contractName: "UsernamePricePerLengthNamespaceRule",
       address: "0xad917a20bca258020FF81590f62Ff05366eBb180",
-      implementation: "0x515b14c04E0D97AD83CCc8de58448790E0fDDb1d",
+      implementation: "0xFDD1eD00eFAB19fD43217cD56217466720e33717",
     },
     GroupFactoryImpl: {
       contractName: "GroupFactory",
       address: "0xd789934b2200ac1fC54Ba89fa24E2aE7BCEf6Be5",
+    },
+    LensNativePaymentHelperImpl: {
+      contractName: "LensNativePaymentHelper",
+      address: "0xf14155b9F77E2302A8a849038B94891F98909C7b",
+    },
+    LensNativePaymentHelper: {
+      contractName: "TransparentUpgradeableProxy",
+      address: "0x1cCf0A481e3824E271C4b89a79E00c838D4A465B",
+      implementation: "0x38Dc515EEaaeb0160Ff9F0CA4d326Dd04Ba32791",
     },
   },
   testnet: {
@@ -402,7 +411,7 @@ export const lensDeployments = {
     },
     AccountImpl: {
       contractName: "Account",
-      address: "0x30135da9dAB10c5a6377f23566c7b6084193866a",
+      address: "0xBb507737f0686b71588d54d7758bCc4969D9a497",
     },
     FeedImpl: {
       contractName: "Feed",
@@ -418,7 +427,7 @@ export const lensDeployments = {
     },
     NamespaceImpl: {
       contractName: "Namespace",
-      address: "0xd2Fb86A63891415244A7D9d02148D5b230bE69FB",
+      address: "0x1976ba9fFEeeD545A114C6Ae274b878F5E389deC",
     },
     AccessControlFactory: {
       name: "AccessControlFactory",
@@ -553,7 +562,7 @@ export const lensDeployments = {
     ActionHubImpl: {
       name: "ActionHubImpl",
       contractName: "ActionHub",
-      address: "0x4e6cF1F803CdbEE5Fe02360C7242268f3D9C2235",
+      address: "0x865856952cceF0C3CBa5589543A6e4Fdac00B5fA",
     },
     ActionHub: {
       contractName: "TransparentUpgradeableProxy",
@@ -564,14 +573,14 @@ export const lensDeployments = {
       address: "0xbcBd368a8251BD06918D3edef68e1C8e8F853633",
     },
     SimplePaymentFeedRuleImpl: {
-      name: "SimplePaymentFeedRuleImpl",
       contractName: "SimplePaymentFeedRule",
-      address: "0x62581dd11c755ED5237b355b7dD2305eF38C0f03",
+      address: "0x22A9a270A599f535518C830bac25401cB569eCb1",
     },
     SimplePaymentFeedRule: {
+      name: "SimplePaymentFeedRule",
       contractName: "TransparentUpgradeableProxy",
       address: "0x55efA60BE4fd711C114B853A5d251b95bdCC4F66",
-      implementation: "0x62581dd11c755ED5237b355b7dD2305eF38C0f03",
+      implementation: "0x22A9a270A599f535518C830bac25401cB569eCb1",
     },
     TokenGatedFeedRuleImpl: {
       name: "TokenGatedFeedRuleImpl",
@@ -614,14 +623,14 @@ export const lensDeployments = {
       implementation: "0x8FAaC49C588d19f5F723590fFd8d094bA396230e",
     },
     SimplePaymentFollowRuleImpl: {
-      name: "SimplePaymentFollowRuleImpl",
       contractName: "SimplePaymentFollowRule",
-      address: "0x29c609125De355f6DAaDD509Ea39064f59a1AEC1",
+      address: "0xE3C9a3d257E3B73edc2feD080A0eE97BD5229381",
     },
     SimplePaymentFollowRule: {
+      name: "SimplePaymentFollowRule",
       contractName: "TransparentUpgradeableProxy",
       address: "0x7EA84D750E8C2b7D0EB5e8114f54111d78Eeb992",
-      implementation: "0x29c609125De355f6DAaDD509Ea39064f59a1AEC1",
+      implementation: "0xE3C9a3d257E3B73edc2feD080A0eE97BD5229381",
     },
     TokenGatedFollowRuleImpl: {
       name: "TokenGatedFollowRuleImpl",
@@ -644,14 +653,14 @@ export const lensDeployments = {
       implementation: "0xC76fDa79062F63083c65c5Ce639e1C02F1EdEd00",
     },
     SimplePaymentGroupRuleImpl: {
-      name: "SimplePaymentGroupRuleImpl",
       contractName: "SimplePaymentGroupRule",
-      address: "0x930f1DEF688EeF2Fe3567390F99e5F9501176F5A",
+      address: "0x2dbA07936cAAB8B77d1bd7C0D87486DCB05C1903",
     },
     SimplePaymentGroupRule: {
+      name: "SimplePaymentGroupRule",
       contractName: "TransparentUpgradeableProxy",
       address: "0xC99b11687d91EC4f6e65EcFa205795101BbaB5B2",
-      implementation: "0x930f1DEF688EeF2Fe3567390F99e5F9501176F5A",
+      implementation: "0x2dbA07936cAAB8B77d1bd7C0D87486DCB05C1903",
     },
     TokenGatedGroupRuleImpl: {
       name: "TokenGatedGroupRuleImpl",
@@ -694,44 +703,52 @@ export const lensDeployments = {
       implementation: "0xF879a56cBc43f0d79dA839d75bbE80a162f01340",
     },
     UsernamePricePerLengthNamespaceRuleImpl: {
-      name: "UsernamePricePerLengthNamespaceRuleImpl",
       contractName: "UsernamePricePerLengthNamespaceRule",
-      address: "0x0CaD734EA95DB34cbfE0af868A5e1b97471ee8d8",
+      address: "0x5eEFE4a92ABcb6F5B0963598c7b0607047d0BB21",
     },
     UsernamePricePerLengthNamespaceRule: {
+      name: "UsernamePricePerLengthNamespaceRule",
       contractName: "TransparentUpgradeableProxy",
       address: "0x4aBdf719Bc6659e91233c62D4d08D6F4229989e8",
-      implementation: "0x0CaD734EA95DB34cbfE0af868A5e1b97471ee8d8",
+      implementation: "0x5eEFE4a92ABcb6F5B0963598c7b0607047d0BB21",
     },
     TippingAccountActionImpl: {
       name: "TippingAccountActionImpl",
       contractName: "TippingAccountAction",
-      address: "0x7239243Fce3600726Bc4d73F80d8c337f43DaFF0",
+      address: "0xdB82512F84B3E46B0fc7f6A38eE89E55e7a75447",
     },
     TippingAccountAction: {
       contractName: "TransparentUpgradeableProxy",
       address: "0xda614A06972C70a8d50D494FB678d48cf536f769",
-      implementation: "0x7239243Fce3600726Bc4d73F80d8c337f43DaFF0",
+      implementation: "0xdB82512F84B3E46B0fc7f6A38eE89E55e7a75447",
     },
     TippingPostActionImpl: {
       name: "TippingPostActionImpl",
       contractName: "TippingPostAction",
-      address: "0x98ea8565fDB55bBe94937307D657a9Bfdb762609",
+      address: "0xEE4C444Bd08BC202324D88EB1FC954B08Be77c77",
     },
     TippingPostAction: {
       contractName: "TransparentUpgradeableProxy",
       address: "0x34EF0F5e41cB6c7ad9438079c179d70C7567ae00",
-      implementation: "0x98ea8565fDB55bBe94937307D657a9Bfdb762609",
+      implementation: "0xEE4C444Bd08BC202324D88EB1FC954B08Be77c77",
     },
     SimpleCollectActionImpl: {
       name: "SimpleCollectActionImpl",
       contractName: "SimpleCollectAction",
-      address: "0x9fD1a3e69ff6c7Cb907e47AEeD49d2E09ddE117C",
+      address: "0xD2f90542be809d10C416a6f6E0619100A6B0FdC5",
     },
     SimpleCollectAction: {
       contractName: "TransparentUpgradeableProxy",
       address: "0x17d5B3917Eab14Ab4923DEc597B39EF64863C830",
-      implementation: "0x9fD1a3e69ff6c7Cb907e47AEeD49d2E09ddE117C",
+      implementation: "0xD2f90542be809d10C416a6f6E0619100A6B0FdC5",
+    },
+    LensCreate2: {
+      contractName: "TransparentUpgradeableProxy",
+      address: "0x52AF9CF29976C310E3DE03C509E108edB6edb8c0",
+    },
+    LensCreate2Impl: {
+      contractName: "LensCreate2",
+      address: "0xdd7Aa96DE3CccCb5dF635227869a6E7c5a301D6F",
     },
     GroupFactoryImpl: {
       contractName: "GroupFactory",
@@ -759,6 +776,15 @@ export const lensDeployments = {
           usernameReservedNamespaceRule: "0x9a8b0e3344f5ca5f6fc9FcEb8fF543FDeF5eb2b9",
         },
       ],
+    },
+    LensNativePaymentHelperImpl: {
+      contractName: "LensNativePaymentHelper",
+      address: "0x38Dc515EEaaeb0160Ff9F0CA4d326Dd04Ba32791",
+    },
+    LensNativePaymentHelper: {
+      contractName: "TransparentUpgradeableProxy",
+      address: "0x1cCf0A481e3824E271C4b89a79E00c838D4A465B",
+      implementation: "0x38Dc515EEaaeb0160Ff9F0CA4d326Dd04Ba32791",
     },
   },
 } as const;

@@ -13,8 +13,9 @@ import {
 } from "lens-modules/contracts/core/types/Types.sol";
 import {CallLib} from "lens-modules/contracts/core/libraries/CallLib.sol";
 import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
+import {PayableUsingNativePaymentHelper} from "lens-modules/contracts/extensions/fees/LensNativePaymentHelper.sol";
 
-abstract contract RuleBasedPrimitive {
+abstract contract RuleBasedPrimitive is PayableUsingNativePaymentHelper {
     using RulesLib for RulesStorage;
     using CallLib for address;
 

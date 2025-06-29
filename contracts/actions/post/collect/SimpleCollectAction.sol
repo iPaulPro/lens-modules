@@ -14,6 +14,7 @@ import {Errors} from "lens-modules/contracts/core/types/Errors.sol";
 import {Initializable} from "lens-modules/contracts/core/upgradeability/Initializable.sol";
 import {BPS_MAX} from "lens-modules/contracts/core/types/Constants.sol";
 import {LensPaymentHandler} from "lens-modules/contracts/extensions/fees/LensPaymentHandler.sol";
+import {NATIVE_TOKEN} from "lens-modules/contracts/core/types/Constants.sol";
 
 error InvalidSplits();
 error InvalidRecipient();
@@ -203,8 +204,7 @@ contract SimpleCollectAction is
             require(configData.recipients.length == 0, Errors.InvalidParameter());
             require(configData.referralFeeBps == 0, Errors.InvalidParameter());
         } else {
-            // We expect token to support ERC-20 interface (call balanceOf and expect it to not revert)
-            IERC20(configData.token).balanceOf(address(this));
+            _validateToken(configData.token);
             require(configData.recipients.length > 0, Errors.InvalidParameter());
             require(configData.referralFeeBps <= BPS_MAX, Errors.InvalidParameter());
         }

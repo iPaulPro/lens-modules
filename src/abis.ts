@@ -116,16 +116,27 @@ export const accessControlledAbi = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const accountAbi = [
-  { type: "constructor", inputs: [], stateMutability: "nonpayable" },
+  {
+    type: "constructor",
+    inputs: [
+      { name: "nativeGHO", internalType: "address", type: "address" },
+      { name: "wrappedGHO", internalType: "address", type: "address" },
+    ],
+    stateMutability: "nonpayable",
+  },
   { type: "receive", stateMutability: "payable" },
   {
     type: "function",
     inputs: [
       { name: "selector", internalType: "bytes4", type: "bytes4" },
-      { name: "data", internalType: "bytes", type: "bytes" },
+      { name: "encodedParams", internalType: "bytes", type: "bytes" },
     ],
     name: "abiDecodeForKnownSelectorHelper",
-    outputs: [{ name: "", internalType: "address", type: "address" }],
+    outputs: [
+      { name: "", internalType: "address", type: "address" },
+      { name: "", internalType: "uint256", type: "uint256" },
+      { name: "", internalType: "address", type: "address" },
+    ],
     stateMutability: "pure",
   },
   {
@@ -133,7 +144,7 @@ export const accountAbi = [
     inputs: [
       { name: "accountManager", internalType: "address", type: "address" },
       {
-        name: "accountManagerPermissions",
+        name: "permissions",
         internalType: "struct AccountManagerPermissions",
         type: "tuple",
         components: [
@@ -180,10 +191,51 @@ export const accountAbi = [
   },
   {
     type: "function",
-    inputs: [{ name: "accountManager", internalType: "address", type: "address" }],
+    inputs: [{ name: "executor", internalType: "address", type: "address" }],
     name: "canSetMetadataURI",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
     stateMutability: "view",
+  },
+  {
+    type: "function",
+    inputs: [
+      {
+        name: "allowanceChanges",
+        internalType: "struct AllowanceChange[]",
+        type: "tuple[]",
+        components: [
+          { name: "spender", internalType: "address", type: "address" },
+          {
+            name: "allowanceDecreases",
+            internalType: "struct Allowance[]",
+            type: "tuple[]",
+            components: [
+              { name: "currency", internalType: "address", type: "address" },
+              { name: "byAmount", internalType: "uint256", type: "uint256" },
+            ],
+          },
+          {
+            name: "allowanceIncreases",
+            internalType: "struct Allowance[]",
+            type: "tuple[]",
+            components: [
+              { name: "currency", internalType: "address", type: "address" },
+              { name: "byAmount", internalType: "uint256", type: "uint256" },
+            ],
+          },
+        ],
+      },
+    ],
+    name: "changeAllowance",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [{ name: "managers", internalType: "address[]", type: "address[]" }],
+    name: "clearAllAllowances",
+    outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "function",
@@ -213,6 +265,16 @@ export const accountAbi = [
     name: "executeTransactions",
     outputs: [{ name: "", internalType: "bytes[]", type: "bytes[]" }],
     stateMutability: "payable",
+  },
+  {
+    type: "function",
+    inputs: [
+      { name: "accountManager", internalType: "address", type: "address" },
+      { name: "currency", internalType: "address", type: "address" },
+    ],
+    name: "getAccountManagerAllowance",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
     type: "function",
@@ -366,6 +428,13 @@ export const accountAbi = [
     type: "function",
     inputs: [{ name: "accountManager", internalType: "address", type: "address" }],
     name: "removeAccountManager",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [],
+    name: "removeOwnerAsManager",
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -527,6 +596,69 @@ export const accountAbi = [
       },
     ],
     name: "Lens_Account_AccountManagerUpdated",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "spender",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+    ],
+    name: "Lens_Account_AllAllowancesCleared",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "spender",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "currency",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "newAllowance",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+    ],
+    name: "Lens_Account_AllowanceDecreased",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "spender",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "currency",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "newAllowance",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+    ],
+    name: "Lens_Account_AllowanceIncreased",
   },
   {
     type: "event",
@@ -707,6 +839,7 @@ export const accountAbi = [
     name: "Lens_Ownable_OwnershipTransferred",
   },
   { type: "error", inputs: [], name: "AlreadyInitialized" },
+  { type: "error", inputs: [], name: "InsufficientAllowance" },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
   { type: "error", inputs: [], name: "NotAllowed" },
@@ -1519,14 +1652,14 @@ export const actionHubAbi = [
     inputs: [{ name: "action", internalType: "address", type: "address" }],
     name: "signalUniversalAccountAction",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
     inputs: [{ name: "action", internalType: "address", type: "address" }],
     name: "signalUniversalPostAction",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "event",
@@ -2112,6 +2245,7 @@ export const actionHubAbi = [
     name: "Lens_ExtraStorageSet",
   },
   { type: "error", inputs: [], name: "Disabled" },
+  { type: "error", inputs: [], name: "InvalidSourceStampOriginalMsgSender" },
   { type: "error", inputs: [], name: "RedundantStateChange" },
   { type: "error", inputs: [], name: "UnexpectedContractImpl" },
 ] as const;
@@ -3561,7 +3695,7 @@ export const baseAccountActionAbi = [
     ],
     name: "configure",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -3580,7 +3714,7 @@ export const baseAccountActionAbi = [
     ],
     name: "execute",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -3600,7 +3734,7 @@ export const baseAccountActionAbi = [
     ],
     name: "setDisabled",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
@@ -3631,7 +3765,7 @@ export const basePostActionAbi = [
     ],
     name: "configure",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -3651,7 +3785,7 @@ export const basePostActionAbi = [
     ],
     name: "execute",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -3672,7 +3806,7 @@ export const basePostActionAbi = [
     ],
     name: "setDisabled",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
@@ -4027,11 +4161,14 @@ export const errorsAbi = [
   { type: "error", inputs: [], name: "DoesNotExist" },
   { type: "error", inputs: [], name: "DuplicatedValue" },
   { type: "error", inputs: [], name: "Expired" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
   { type: "error", inputs: [], name: "Immutable" },
+  { type: "error", inputs: [], name: "InsufficientAllowance" },
   { type: "error", inputs: [], name: "InvalidConfigSalt" },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
   { type: "error", inputs: [], name: "InvalidSignature" },
+  { type: "error", inputs: [], name: "InvalidSourceStampOriginalMsgSender" },
   { type: "error", inputs: [], name: "LimitReached" },
   { type: "error", inputs: [], name: "Locked" },
   { type: "error", inputs: [], name: "NonceUsed" },
@@ -4039,6 +4176,7 @@ export const errorsAbi = [
   { type: "error", inputs: [], name: "NotAMember" },
   { type: "error", inputs: [], name: "NotAllowed" },
   { type: "error", inputs: [], name: "NotEnough" },
+  { type: "error", inputs: [], name: "NotEnoughBalance" },
   { type: "error", inputs: [], name: "NotFollowing" },
   { type: "error", inputs: [], name: "NotFound" },
   { type: "error", inputs: [], name: "NotImplemented" },
@@ -5733,6 +5871,7 @@ export const feedAbi = [
   { type: "error", inputs: [], name: "InvalidConfigSalt" },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
+  { type: "error", inputs: [], name: "InvalidSourceStampOriginalMsgSender" },
   { type: "error", inputs: [], name: "LimitReached" },
   { type: "error", inputs: [], name: "NotAContract" },
   { type: "error", inputs: [], name: "RedundantStateChange" },
@@ -7008,6 +7147,7 @@ export const graphAbi = [
   { type: "error", inputs: [], name: "InvalidConfigSalt" },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
+  { type: "error", inputs: [], name: "InvalidSourceStampOriginalMsgSender" },
   { type: "error", inputs: [], name: "LimitReached" },
   { type: "error", inputs: [], name: "NotAContract" },
   { type: "error", inputs: [], name: "NotFollowing" },
@@ -8035,6 +8175,7 @@ export const groupAbi = [
   { type: "error", inputs: [], name: "InvalidConfigSalt" },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
+  { type: "error", inputs: [], name: "InvalidSourceStampOriginalMsgSender" },
   { type: "error", inputs: [], name: "LimitReached" },
   { type: "error", inputs: [], name: "NotAContract" },
   { type: "error", inputs: [], name: "NotAllowed" },
@@ -8760,7 +8901,7 @@ export const iAccountAbi = [
   {
     type: "function",
     inputs: [
-      { name: "_accountManager", internalType: "address", type: "address" },
+      { name: "accountManager", internalType: "address", type: "address" },
       {
         name: "accountManagerPermissions",
         internalType: "struct AccountManagerPermissions",
@@ -8798,6 +8939,47 @@ export const iAccountAbi = [
   {
     type: "function",
     inputs: [
+      {
+        name: "allowanceChanges",
+        internalType: "struct AllowanceChange[]",
+        type: "tuple[]",
+        components: [
+          { name: "spender", internalType: "address", type: "address" },
+          {
+            name: "allowanceDecreases",
+            internalType: "struct Allowance[]",
+            type: "tuple[]",
+            components: [
+              { name: "currency", internalType: "address", type: "address" },
+              { name: "byAmount", internalType: "uint256", type: "uint256" },
+            ],
+          },
+          {
+            name: "allowanceIncreases",
+            internalType: "struct Allowance[]",
+            type: "tuple[]",
+            components: [
+              { name: "currency", internalType: "address", type: "address" },
+              { name: "byAmount", internalType: "uint256", type: "uint256" },
+            ],
+          },
+        ],
+      },
+    ],
+    name: "changeAllowance",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [{ name: "managers", internalType: "address[]", type: "address[]" }],
+    name: "clearAllAllowances",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [
       { name: "target", internalType: "address", type: "address" },
       { name: "value", internalType: "uint256", type: "uint256" },
       { name: "data", internalType: "bytes", type: "bytes" },
@@ -8823,6 +9005,16 @@ export const iAccountAbi = [
     name: "executeTransactions",
     outputs: [{ name: "", internalType: "bytes[]", type: "bytes[]" }],
     stateMutability: "payable",
+  },
+  {
+    type: "function",
+    inputs: [
+      { name: "accountManager", internalType: "address", type: "address" },
+      { name: "currency", internalType: "address", type: "address" },
+    ],
+    name: "getAccountManagerAllowance",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
     type: "function",
@@ -8908,7 +9100,7 @@ export const iAccountAbi = [
   },
   {
     type: "function",
-    inputs: [{ name: "_accountManager", internalType: "address", type: "address" }],
+    inputs: [{ name: "accountManager", internalType: "address", type: "address" }],
     name: "removeAccountManager",
     outputs: [],
     stateMutability: "nonpayable",
@@ -8940,7 +9132,7 @@ export const iAccountAbi = [
   {
     type: "function",
     inputs: [
-      { name: "_metadataURI", internalType: "string", type: "string" },
+      { name: "metadataURI", internalType: "string", type: "string" },
       {
         name: "sourceStamp",
         internalType: "struct SourceStamp",
@@ -9064,6 +9256,69 @@ export const iAccountAbi = [
       },
     ],
     name: "Lens_Account_AccountManagerUpdated",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "spender",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+    ],
+    name: "Lens_Account_AllAllowancesCleared",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "spender",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "currency",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "newAllowance",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+    ],
+    name: "Lens_Account_AllowanceDecreased",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "spender",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "currency",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "newAllowance",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+    ],
+    name: "Lens_Account_AllowanceIncreased",
   },
   {
     type: "event",
@@ -9202,7 +9457,7 @@ export const iAccountActionAbi = [
     ],
     name: "configure",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -9221,7 +9476,7 @@ export const iAccountActionAbi = [
     ],
     name: "execute",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -9241,7 +9496,7 @@ export const iAccountActionAbi = [
     ],
     name: "setDisabled",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
 ] as const;
 
@@ -10864,7 +11119,7 @@ export const ierc721NamespaceAbi = [
     ],
     name: "assignUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -10961,7 +11216,7 @@ export const ierc721NamespaceAbi = [
     ],
     name: "createUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -11161,7 +11416,7 @@ export const ierc721NamespaceAbi = [
     ],
     name: "removeUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -11290,7 +11545,7 @@ export const ierc721NamespaceAbi = [
     ],
     name: "unassignUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -15249,6 +15504,30 @@ export const iLensFeesAbi = [
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ILensNativePaymentHelper
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const iLensNativePaymentHelperAbi = [
+  {
+    type: "function",
+    inputs: [{ name: "to", internalType: "address", type: "address" }],
+    name: "refundNative",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [
+      { name: "to", internalType: "address", type: "address" },
+      { name: "amount", internalType: "uint256", type: "uint256" },
+    ],
+    name: "transferNative",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ILock
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -15607,7 +15886,7 @@ export const iNamespaceAbi = [
     ],
     name: "assignUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -15697,7 +15976,7 @@ export const iNamespaceAbi = [
     ],
     name: "createUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -15852,7 +16131,7 @@ export const iNamespaceAbi = [
     ],
     name: "removeUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -15930,7 +16209,7 @@ export const iNamespaceAbi = [
     ],
     name: "unassignUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -16560,7 +16839,7 @@ export const iPostActionAbi = [
     ],
     name: "configure",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -16580,7 +16859,7 @@ export const iPostActionAbi = [
     ],
     name: "execute",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -16601,7 +16880,7 @@ export const iPostActionAbi = [
     ],
     name: "setDisabled",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
 ] as const;
 
@@ -17204,7 +17483,7 @@ export const iSimpleCollectActionAbi = [
     ],
     name: "configure",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -17224,7 +17503,7 @@ export const iSimpleCollectActionAbi = [
     ],
     name: "execute",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -17290,7 +17569,7 @@ export const iSimpleCollectActionAbi = [
     ],
     name: "setDisabled",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
 ] as const;
 
@@ -17704,6 +17983,20 @@ export const lensCollectedPostAbi = [
     type: "event",
     anonymous: false,
     inputs: [
+      { name: "name", internalType: "string", type: "string", indexed: false },
+      {
+        name: "symbol",
+        internalType: "string",
+        type: "string",
+        indexed: false,
+      },
+    ],
+    name: "Lens_ERC721_Initialized",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
       {
         name: "tokenURIProvider",
         internalType: "address",
@@ -18044,6 +18337,20 @@ export const lensErc721Abi = [
       },
     ],
     name: "BatchMetadataUpdate",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "name", internalType: "string", type: "string", indexed: false },
+      {
+        name: "symbol",
+        internalType: "string",
+        type: "string",
+        indexed: false,
+      },
+    ],
+    name: "Lens_ERC721_Initialized",
   },
   {
     type: "event",
@@ -18857,6 +19164,39 @@ export const lensFeesAbi = [
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LensNativePaymentHelper
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const lensNativePaymentHelperAbi = [
+  { type: "receive", stateMutability: "payable" },
+  {
+    type: "function",
+    inputs: [{ name: "to", internalType: "address", type: "address" }],
+    name: "refundNative",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [
+      { name: "to", internalType: "address", type: "address" },
+      { name: "amount", internalType: "uint256", type: "uint256" },
+    ],
+    name: "transferNative",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
+  { type: "error", inputs: [], name: "NotEnoughBalance" },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LensRulePaymentHandler
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const lensRulePaymentHandlerAbi = [] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // LensUsernameTokenURIProvider
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -19606,7 +19946,7 @@ export const namespaceAbi = [
     ],
     name: "assignUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -19739,7 +20079,7 @@ export const namespaceAbi = [
     ],
     name: "createAndAssignUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -19785,7 +20125,7 @@ export const namespaceAbi = [
     ],
     name: "createUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -20006,7 +20346,7 @@ export const namespaceAbi = [
     ],
     name: "removeUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -20175,7 +20515,7 @@ export const namespaceAbi = [
     ],
     name: "unassignUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -20304,6 +20644,20 @@ export const namespaceAbi = [
       },
     ],
     name: "Lens_Contract_Deployed",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "name", internalType: "string", type: "string", indexed: false },
+      {
+        name: "symbol",
+        internalType: "string",
+        type: "string",
+        indexed: false,
+      },
+    ],
+    name: "Lens_ERC721_Initialized",
   },
   {
     type: "event",
@@ -20826,9 +21180,11 @@ export const namespaceAbi = [
   { type: "error", inputs: [], name: "AlreadyInitialized" },
   { type: "error", inputs: [], name: "ConfigureCallReverted" },
   { type: "error", inputs: [], name: "DoesNotExist" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
   { type: "error", inputs: [], name: "InvalidConfigSalt" },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
+  { type: "error", inputs: [], name: "InvalidSourceStampOriginalMsgSender" },
   { type: "error", inputs: [], name: "LimitReached" },
   { type: "error", inputs: [], name: "NotAContract" },
   { type: "error", inputs: [], name: "RedundantStateChange" },
@@ -21013,7 +21369,7 @@ export const ownableMetadataBasedAccountActionAbi = [
     ],
     name: "configure",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -21032,7 +21388,7 @@ export const ownableMetadataBasedAccountActionAbi = [
     ],
     name: "execute",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -21073,7 +21429,7 @@ export const ownableMetadataBasedAccountActionAbi = [
     ],
     name: "setDisabled",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -21150,7 +21506,7 @@ export const ownableMetadataBasedPostActionAbi = [
     ],
     name: "configure",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -21170,7 +21526,7 @@ export const ownableMetadataBasedPostActionAbi = [
     ],
     name: "execute",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -21212,7 +21568,7 @@ export const ownableMetadataBasedPostActionAbi = [
     ],
     name: "setDisabled",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -21643,6 +21999,12 @@ export const ownerAdminOnlyAccessControlAbi = [
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// PayableUsingNativePaymentHelper
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const payableUsingNativePaymentHelperAbi = [] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PermissionlessAccessControl
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -21762,6 +22124,34 @@ export const proxyAdminAbi = [
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "Locked" },
   { type: "error", inputs: [], name: "NotAContract" },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Query
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const queryAbi = [
+  {
+    type: "function",
+    inputs: [],
+    name: "IS_SCRIPT",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    inputs: [],
+    name: "run",
+    outputs: [],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    inputs: [],
+    name: "testQuery",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24926,7 +25316,7 @@ export const ruleBasedNamespaceAbi = [
     ],
     name: "assignUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -25016,7 +25406,7 @@ export const ruleBasedNamespaceAbi = [
     ],
     name: "createUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -25171,7 +25561,7 @@ export const ruleBasedNamespaceAbi = [
     ],
     name: "removeUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -25249,7 +25639,7 @@ export const ruleBasedNamespaceAbi = [
     ],
     name: "unassignUsername",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -25727,7 +26117,7 @@ export const simpleCollectActionAbi = [
     ],
     name: "configure",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -25747,7 +26137,7 @@ export const simpleCollectActionAbi = [
     ],
     name: "execute",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -25844,7 +26234,7 @@ export const simpleCollectActionAbi = [
     ],
     name: "setDisabled",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -25896,6 +26286,7 @@ export const simpleCollectActionAbi = [
   { type: "error", inputs: [], name: "Disabled" },
   { type: "error", inputs: [], name: "DoesNotExist" },
   { type: "error", inputs: [], name: "Expired" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
   { type: "error", inputs: [], name: "Immutable" },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
@@ -26955,7 +27346,7 @@ export const tippingAccountActionAbi = [
     ],
     name: "configure",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -26974,7 +27365,7 @@ export const tippingAccountActionAbi = [
     ],
     name: "execute",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -27025,7 +27416,7 @@ export const tippingAccountActionAbi = [
     ],
     name: "setDisabled",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -27074,6 +27465,7 @@ export const tippingAccountActionAbi = [
     name: "Lens_Ownable_OwnershipTransferred",
   },
   { type: "error", inputs: [], name: "AlreadyInitialized" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
   { type: "error", inputs: [], name: "NotImplemented" },
@@ -27108,7 +27500,7 @@ export const tippingPostActionAbi = [
     ],
     name: "configure",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -27128,7 +27520,7 @@ export const tippingPostActionAbi = [
     ],
     name: "execute",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -27180,7 +27572,7 @@ export const tippingPostActionAbi = [
     ],
     name: "setDisabled",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -27229,6 +27621,7 @@ export const tippingPostActionAbi = [
     name: "Lens_PostAction_MetadataURISet",
   },
   { type: "error", inputs: [], name: "AlreadyInitialized" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
   { type: "error", inputs: [], name: "NotImplemented" },
