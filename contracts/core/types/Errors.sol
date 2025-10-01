@@ -7,6 +7,7 @@ library Errors {
     error AllAnyOfRulesReverted();
     error AlreadyExists();
     error AlreadyInitialized();
+    error AlreadyProcessed();
     error AutoUpgradeEnabled();
     error Banned();
     error Blocked();
@@ -46,7 +47,9 @@ library Errors {
     error UnexpectedContractImpl();
     error UnexpectedValue();
     error UnsupportedSelector();
+    error UnsupportedOperation();
     error Untrusted();
     error UsernameAssigned();
+    error TransferFailed();
     error WrongSigner();
 }

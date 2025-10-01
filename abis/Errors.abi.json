@@ -26,6 +26,11 @@
   },
   {
     "type": "error",
+    "name": "AlreadyProcessed",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "AutoUpgradeEnabled",
     "inputs": []
   },
@@ -201,12 +206,22 @@
   },
   {
     "type": "error",
+    "name": "TransferFailed",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "UnexpectedContractImpl",
     "inputs": []
   },
   {
     "type": "error",
     "name": "UnexpectedValue",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "UnsupportedOperation",
     "inputs": []
   },
   {

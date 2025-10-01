@@ -39,9 +39,12 @@
     }
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && find dist -name '*.d.cts' -delete",
     "prepublish": "npm run build",
-    "generate": "npx wagmi generate"
+    "prettier": "prettier --write .",
+    "generate-abis": "npx wagmi generate",
+    "generate-deployments": "node ./scripts/generate-deployments.js",
+    "generate": "npm run generate-abis && npm run generate-deployments && npm run prettier"
   },
   "repository": {
     "type": "git",

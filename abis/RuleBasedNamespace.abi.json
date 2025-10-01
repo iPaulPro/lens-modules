@@ -229,7 +229,7 @@
       }
     ],
     "outputs": [],
-    "stateMutability": "nonpayable"
+    "stateMutability": "payable"
   },
   {
     "type": "function",
@@ -1411,6 +1411,11 @@
   {
     "type": "error",
     "name": "ConfigureCallReverted",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "FailedToTransferNative",
     "inputs": []
   },
   {

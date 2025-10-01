@@ -426,6 +426,13 @@ export const accountAbi = [
   },
   {
     type: "function",
+    inputs: [],
+    name: "removeAccountAsManager",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
     inputs: [{ name: "accountManager", internalType: "address", type: "address" }],
     name: "removeAccountManager",
     outputs: [],
@@ -4150,6 +4157,7 @@ export const errorsAbi = [
   { type: "error", inputs: [], name: "AllAnyOfRulesReverted" },
   { type: "error", inputs: [], name: "AlreadyExists" },
   { type: "error", inputs: [], name: "AlreadyInitialized" },
+  { type: "error", inputs: [], name: "AlreadyProcessed" },
   { type: "error", inputs: [], name: "AutoUpgradeEnabled" },
   { type: "error", inputs: [], name: "Banned" },
   { type: "error", inputs: [], name: "Blocked" },
@@ -4185,8 +4193,10 @@ export const errorsAbi = [
   { type: "error", inputs: [], name: "RuleNotConfigured" },
   { type: "error", inputs: [], name: "SelectorEnabledForDifferentRuleType" },
   { type: "error", inputs: [], name: "SingleAnyOfRule" },
+  { type: "error", inputs: [], name: "TransferFailed" },
   { type: "error", inputs: [], name: "UnexpectedContractImpl" },
   { type: "error", inputs: [], name: "UnexpectedValue" },
+  { type: "error", inputs: [], name: "UnsupportedOperation" },
   { type: "error", inputs: [], name: "UnsupportedSelector" },
   { type: "error", inputs: [], name: "Untrusted" },
   { type: "error", inputs: [], name: "UsernameAssigned" },
@@ -4511,7 +4521,7 @@ export const feedAbi = [
     ],
     name: "changeFeedRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -4574,7 +4584,7 @@ export const feedAbi = [
     ],
     name: "changePostRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -4706,7 +4716,7 @@ export const feedAbi = [
     ],
     name: "createPost",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -4742,7 +4752,7 @@ export const feedAbi = [
     ],
     name: "deletePost",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -4831,7 +4841,7 @@ export const feedAbi = [
     ],
     name: "editPost",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -5868,6 +5878,7 @@ export const feedAbi = [
   { type: "error", inputs: [], name: "CannotHaveRules" },
   { type: "error", inputs: [], name: "ConfigureCallReverted" },
   { type: "error", inputs: [], name: "DoesNotExist" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
   { type: "error", inputs: [], name: "InvalidConfigSalt" },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
@@ -6285,7 +6296,7 @@ export const graphAbi = [
     ],
     name: "changeFollowRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -6329,7 +6340,7 @@ export const graphAbi = [
     ],
     name: "changeGraphRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -6393,7 +6404,7 @@ export const graphAbi = [
     ],
     name: "follow",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -6614,7 +6625,7 @@ export const graphAbi = [
     ],
     name: "unfollow",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "event",
@@ -7144,6 +7155,7 @@ export const graphAbi = [
   { type: "error", inputs: [], name: "CannotFollowAgain" },
   { type: "error", inputs: [], name: "ConfigureCallReverted" },
   { type: "error", inputs: [], name: "DoesNotExist" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
   { type: "error", inputs: [], name: "InvalidConfigSalt" },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
@@ -7294,7 +7306,7 @@ export const groupAbi = [
     ],
     name: "addMember",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -7390,7 +7402,7 @@ export const groupAbi = [
     ],
     name: "changeGroupRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -7541,7 +7553,7 @@ export const groupAbi = [
     ],
     name: "joinGroup",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -7577,7 +7589,7 @@ export const groupAbi = [
     ],
     name: "leaveGroup",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -7613,7 +7625,7 @@ export const groupAbi = [
     ],
     name: "removeMember",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -8172,6 +8184,7 @@ export const groupAbi = [
   { type: "error", inputs: [], name: "AlreadyInitialized" },
   { type: "error", inputs: [], name: "ConfigureCallReverted" },
   { type: "error", inputs: [], name: "DoesNotExist" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
   { type: "error", inputs: [], name: "InvalidConfigSalt" },
   { type: "error", inputs: [], name: "InvalidMsgSender" },
   { type: "error", inputs: [], name: "InvalidParameter" },
@@ -11170,7 +11183,7 @@ export const ierc721NamespaceAbi = [
     ],
     name: "changeNamespaceRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -12181,7 +12194,7 @@ export const iFeedAbi = [
     ],
     name: "changeFeedRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -12244,7 +12257,7 @@ export const iFeedAbi = [
     ],
     name: "changePostRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -12376,7 +12389,7 @@ export const iFeedAbi = [
     ],
     name: "createPost",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -12412,7 +12425,7 @@ export const iFeedAbi = [
     ],
     name: "deletePost",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -12501,7 +12514,7 @@ export const iFeedAbi = [
     ],
     name: "editPost",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -13773,7 +13786,7 @@ export const iGraphAbi = [
     ],
     name: "changeFollowRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -13817,7 +13830,7 @@ export const iGraphAbi = [
     ],
     name: "changeGraphRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -13881,7 +13894,7 @@ export const iGraphAbi = [
     ],
     name: "follow",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -14075,7 +14088,7 @@ export const iGraphAbi = [
     ],
     name: "unfollow",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "event",
@@ -14680,7 +14693,7 @@ export const iGroupAbi = [
     ],
     name: "addMember",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -14724,7 +14737,7 @@ export const iGroupAbi = [
     ],
     name: "changeGroupRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -14861,7 +14874,7 @@ export const iGroupAbi = [
     ],
     name: "joinGroup",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -14897,7 +14910,7 @@ export const iGroupAbi = [
     ],
     name: "leaveGroup",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -14933,7 +14946,7 @@ export const iGroupAbi = [
     ],
     name: "removeMember",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -15930,7 +15943,7 @@ export const iNamespaceAbi = [
     ],
     name: "changeNamespaceRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -17767,7 +17780,7 @@ export const lensCollectedPostAbi = [
     inputs: [
       { name: "feed", internalType: "address", type: "address" },
       { name: "postId", internalType: "uint256", type: "uint256" },
-      { name: "isImmutable", internalType: "bool", type: "bool" },
+      { name: "isImmutableCollect", internalType: "bool", type: "bool" },
     ],
     stateMutability: "nonpayable",
   },
@@ -17790,16 +17803,16 @@ export const lensCollectedPostAbi = [
   },
   {
     type: "function",
-    inputs: [],
-    name: "contractURI",
-    outputs: [{ name: "", internalType: "string", type: "string" }],
+    inputs: [{ name: "tokenId", internalType: "uint256", type: "uint256" }],
+    name: "getApproved",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
     stateMutability: "view",
   },
   {
     type: "function",
-    inputs: [{ name: "tokenId", internalType: "uint256", type: "uint256" }],
-    name: "getApproved",
-    outputs: [{ name: "", internalType: "address", type: "address" }],
+    inputs: [],
+    name: "getPostId",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
     stateMutability: "view",
   },
   {
@@ -17809,6 +17822,13 @@ export const lensCollectedPostAbi = [
       { name: "operator", internalType: "address", type: "address" },
     ],
     name: "isApprovedForAll",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    inputs: [],
+    name: "isImmutable",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
     stateMutability: "view",
   },
@@ -17898,7 +17918,7 @@ export const lensCollectedPostAbi = [
   },
   {
     type: "function",
-    inputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    inputs: [{ name: "tokenId", internalType: "uint256", type: "uint256" }],
     name: "tokenURI",
     outputs: [{ name: "", internalType: "string", type: "string" }],
     stateMutability: "view",
@@ -17911,6 +17931,13 @@ export const lensCollectedPostAbi = [
       { name: "tokenId", internalType: "uint256", type: "uint256" },
     ],
     name: "transferFrom",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [],
+    name: "turnImmutable",
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -17978,7 +18005,6 @@ export const lensCollectedPostAbi = [
     ],
     name: "BatchMetadataUpdate",
   },
-  { type: "event", anonymous: false, inputs: [], name: "ContractURIUpdated" },
   {
     type: "event",
     anonymous: false,
@@ -19997,7 +20023,7 @@ export const namespaceAbi = [
     ],
     name: "changeNamespaceRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -22498,7 +22524,7 @@ export const ruleBasedFeedAbi = [
     ],
     name: "changeFeedRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -22561,7 +22587,7 @@ export const ruleBasedFeedAbi = [
     ],
     name: "changePostRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -22693,7 +22719,7 @@ export const ruleBasedFeedAbi = [
     ],
     name: "createPost",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -22729,7 +22755,7 @@ export const ruleBasedFeedAbi = [
     ],
     name: "deletePost",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -22818,7 +22844,7 @@ export const ruleBasedFeedAbi = [
     ],
     name: "editPost",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -23726,6 +23752,7 @@ export const ruleBasedFeedAbi = [
   },
   { type: "error", inputs: [], name: "AllAnyOfRulesReverted" },
   { type: "error", inputs: [], name: "ConfigureCallReverted" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
   { type: "error", inputs: [], name: "InvalidConfigSalt" },
   { type: "error", inputs: [], name: "LimitReached" },
   { type: "error", inputs: [], name: "NotAContract" },
@@ -23802,7 +23829,7 @@ export const ruleBasedGraphAbi = [
     ],
     name: "changeFollowRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -23846,7 +23873,7 @@ export const ruleBasedGraphAbi = [
     ],
     name: "changeGraphRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -23910,7 +23937,7 @@ export const ruleBasedGraphAbi = [
     ],
     name: "follow",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -24104,7 +24131,7 @@ export const ruleBasedGraphAbi = [
     ],
     name: "unfollow",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "event",
@@ -24530,6 +24557,7 @@ export const ruleBasedGraphAbi = [
   },
   { type: "error", inputs: [], name: "AllAnyOfRulesReverted" },
   { type: "error", inputs: [], name: "ConfigureCallReverted" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
   { type: "error", inputs: [], name: "InvalidConfigSalt" },
   { type: "error", inputs: [], name: "LimitReached" },
   { type: "error", inputs: [], name: "NotAContract" },
@@ -24579,7 +24607,7 @@ export const ruleBasedGroupAbi = [
     ],
     name: "addMember",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -24623,7 +24651,7 @@ export const ruleBasedGroupAbi = [
     ],
     name: "changeGroupRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -24760,7 +24788,7 @@ export const ruleBasedGroupAbi = [
     ],
     name: "joinGroup",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -24796,7 +24824,7 @@ export const ruleBasedGroupAbi = [
     ],
     name: "leaveGroup",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -24832,7 +24860,7 @@ export const ruleBasedGroupAbi = [
     ],
     name: "removeMember",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -25224,6 +25252,7 @@ export const ruleBasedGroupAbi = [
     name: "Lens_Group_RuleSelectorEnabled",
   },
   { type: "error", inputs: [], name: "ConfigureCallReverted" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
   { type: "error", inputs: [], name: "InvalidConfigSalt" },
   { type: "error", inputs: [], name: "LimitReached" },
   { type: "error", inputs: [], name: "NotAContract" },
@@ -25360,7 +25389,7 @@ export const ruleBasedNamespaceAbi = [
     ],
     name: "changeNamespaceRules",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
   },
   {
     type: "function",
@@ -26080,6 +26109,7 @@ export const ruleBasedNamespaceAbi = [
     name: "Lens_Username_Unassigned",
   },
   { type: "error", inputs: [], name: "ConfigureCallReverted" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
   { type: "error", inputs: [], name: "InvalidConfigSalt" },
   { type: "error", inputs: [], name: "LimitReached" },
   { type: "error", inputs: [], name: "NotAContract" },
@@ -26087,6 +26117,27 @@ export const ruleBasedNamespaceAbi = [
   { type: "error", inputs: [], name: "RuleNotConfigured" },
   { type: "error", inputs: [], name: "SelectorEnabledForDifferentRuleType" },
   { type: "error", inputs: [], name: "UnsupportedSelector" },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// SetTokenDistributorSigner
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const setTokenDistributorSignerAbi = [
+  {
+    type: "function",
+    inputs: [],
+    name: "IS_SCRIPT",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    inputs: [],
+    name: "run",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26295,6 +26346,8 @@ export const simpleCollectActionAbi = [
   { type: "error", inputs: [], name: "LimitReached" },
   { type: "error", inputs: [], name: "NotFollowing" },
   { type: "error", inputs: [], name: "RedundantStateChange" },
+  { type: "error", inputs: [], name: "UnexpectedValue" },
+  { type: "error", inputs: [], name: "UnsupportedOperation" },
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27626,6 +27679,299 @@ export const tippingPostActionAbi = [
   { type: "error", inputs: [], name: "InvalidParameter" },
   { type: "error", inputs: [], name: "NotImplemented" },
   { type: "error", inputs: [], name: "RedundantStateChange" },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TokenDistributor
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const tokenDistributorAbi = [
+  {
+    type: "constructor",
+    inputs: [{ name: "owner", internalType: "address", type: "address" }],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [
+      { name: "token", internalType: "address", type: "address" },
+      { name: "amount", internalType: "uint256", type: "uint256" },
+      {
+        name: "params",
+        internalType: "struct KeyValue[]",
+        type: "tuple[]",
+        components: [
+          { name: "key", internalType: "bytes32", type: "bytes32" },
+          { name: "value", internalType: "bytes", type: "bytes" },
+        ],
+      },
+    ],
+    name: "createDistribution",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "payable",
+  },
+  {
+    type: "function",
+    inputs: [
+      { name: "distributionId", internalType: "uint256", type: "uint256" },
+      { name: "batchId", internalType: "bytes32", type: "bytes32" },
+      {
+        name: "transfers",
+        internalType: "struct TokenDistributor.TokenTransfer[]",
+        type: "tuple[]",
+        components: [
+          { name: "recipient", internalType: "address", type: "address" },
+          { name: "amount", internalType: "uint256", type: "uint256" },
+        ],
+      },
+      { name: "amountToDistribute", internalType: "uint256", type: "uint256" },
+      { name: "deadline", internalType: "uint256", type: "uint256" },
+      { name: "signature", internalType: "bytes", type: "bytes" },
+    ],
+    name: "distributeTokens",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [{ name: "distributionId", internalType: "uint256", type: "uint256" }],
+    name: "endDistribution",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [{ name: "distributionId", internalType: "uint256", type: "uint256" }],
+    name: "getDistribution",
+    outputs: [
+      {
+        name: "",
+        internalType: "struct TokenDistributor.Distribution",
+        type: "tuple",
+        components: [
+          { name: "token", internalType: "address", type: "address" },
+          { name: "initialAmount", internalType: "uint256", type: "uint256" },
+          { name: "remainingAmount", internalType: "uint256", type: "uint256" },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    inputs: [],
+    name: "getDistributionCount",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    inputs: [],
+    name: "getSigner",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    inputs: [{ name: "owner", internalType: "address", type: "address" }],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [],
+    name: "owner",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    inputs: [{ name: "newOwner", internalType: "address", type: "address" }],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [{ name: "newSigner", internalType: "address", type: "address" }],
+    name: "updateSigner",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [
+      { name: "distributionId", internalType: "uint256", type: "uint256" },
+      { name: "batchId", internalType: "bytes32", type: "bytes32" },
+    ],
+    name: "wasBatchProcessed",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "previousOwner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "newOwner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+    ],
+    name: "Lens_Ownable_OwnershipTransferred",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "distributionId",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: true,
+      },
+      {
+        name: "token",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "amount",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+      {
+        name: "params",
+        internalType: "struct KeyValue[]",
+        type: "tuple[]",
+        components: [
+          { name: "key", internalType: "bytes32", type: "bytes32" },
+          { name: "value", internalType: "bytes", type: "bytes" },
+        ],
+        indexed: false,
+      },
+    ],
+    name: "Lens_TokenDistributor_DistributionCreated",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "distributionId",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: true,
+      },
+      {
+        name: "withdrawnAmount",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+    ],
+    name: "Lens_TokenDistributor_DistributionEnded",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "oldSigner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "newSigner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+    ],
+    name: "Lens_TokenDistributor_SignerUpdated",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "distributionId",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: true,
+      },
+      {
+        name: "batchId",
+        internalType: "bytes32",
+        type: "bytes32",
+        indexed: true,
+      },
+      {
+        name: "recipient",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "amount",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+    ],
+    name: "Lens_TokenDistributor_TransferFailed",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "distributionId",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: true,
+      },
+      {
+        name: "batchId",
+        internalType: "bytes32",
+        type: "bytes32",
+        indexed: true,
+      },
+      {
+        name: "recipient",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "amount",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+    ],
+    name: "Lens_TokenDistributor_TransferSucceeded",
+  },
+  { type: "error", inputs: [], name: "AlreadyInitialized" },
+  { type: "error", inputs: [], name: "AlreadyProcessed" },
+  { type: "error", inputs: [], name: "Expired" },
+  { type: "error", inputs: [], name: "FailedToTransferNative" },
+  { type: "error", inputs: [], name: "InvalidMsgSender" },
+  { type: "error", inputs: [], name: "InvalidParameter" },
+  { type: "error", inputs: [], name: "RedundantStateChange" },
+  { type: "error", inputs: [], name: "TransferFailed" },
+  { type: "error", inputs: [], name: "WrongSigner" },
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
