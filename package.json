@@ -8,7 +8,7 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "/contracts/**/*.sol",
+    "contracts/**/*.sol",
     "dist"
   ],
   "exports": {
@@ -39,7 +39,7 @@
     }
   },
   "scripts": {
-    "build": "tsup && find dist -name '*.d.cts' -delete",
+    "build": "tsup",
     "prepublish": "npm run build",
     "prettier": "prettier --write .",
     "generate-abis": "npx wagmi generate",

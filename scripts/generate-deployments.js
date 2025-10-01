@@ -16,7 +16,6 @@ const processAddressBook = data =>
       contractName: value.contractName,
       address: value.address,
       implementation: value.implementation || undefined,
-      constructorArguments: value.constructorArguments?.length ? value.constructorArguments : undefined,
     };
     return acc;
   }, {});
